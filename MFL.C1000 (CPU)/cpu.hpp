@@ -272,9 +272,9 @@ private:
     void SBB_a_dxB();
     void SBB_a_dyB();
     void SBB_a_dzB();
-    void CMP_x_d();
-    void CMP_y_d();
-    void CMP_z_d();
+    void CMP_x_dB();
+    void CMP_y_dB();
+    void CMP_z_dB();
     void SBB_b_a();
     void SBB_b_iB();
     void SBB_b_dB();

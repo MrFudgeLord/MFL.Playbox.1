@@ -3,7 +3,7 @@
 void CPU::LSL_a() {
     asm("shl             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(a), [flags] "+rm"(f)
@@ -15,7 +15,7 @@ void CPU::LSL_a() {
 void CPU::LSL_b() {
     asm("shl             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(b), [flags] "+rm"(f)
@@ -27,7 +27,7 @@ void CPU::LSL_b() {
 void CPU::ASR_a() {
     asm("sar             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(a), [flags] "+rm"(f)
@@ -39,7 +39,7 @@ void CPU::ASR_a() {
 void CPU::ASR_b() {
     asm("sar             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(b), [flags] "+rm"(f)
@@ -51,7 +51,7 @@ void CPU::ASR_b() {
 void CPU::ROL_a() {
     asm("rol             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(a), [flags] "+rm"(f)
@@ -63,7 +63,7 @@ void CPU::ROL_a() {
 void CPU::ROL_b() {
     asm("rol             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(b), [flags] "+rm"(f)
@@ -75,7 +75,7 @@ void CPU::ROL_b() {
 void CPU::ROR_a() {
     asm("ror             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(a), [flags] "+rm"(f)
@@ -87,7 +87,7 @@ void CPU::ROR_a() {
 void CPU::ROR_b() {
     asm("ror             %[dest], 1                                      \n"
         "lahf                                                            \n"
-        "and             [flags], 0b10011110                             \n"
+        "and             %[flags], 0b10011110                            \n"
         "and             ah, 0b01100001                                  \n"
         "or              %[flags], ah                                    \n"
         : [dest] "+rm"(b), [flags] "+rm"(f)

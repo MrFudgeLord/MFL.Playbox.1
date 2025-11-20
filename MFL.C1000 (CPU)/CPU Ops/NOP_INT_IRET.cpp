@@ -1,7 +1,7 @@
 #include "..\cpu.hpp"
 
 void CPU::NOP() {
-    addCyclePreemptable();
+    return;
 }
 
 void CPU::INT_iB() {

@@ -57,21 +57,21 @@ void CPU::MOV_a_izpzB() {
 
 void CPU::MOV_a_dxB() {
     uint16_t addr    = fetchImmWord();
-    uint16_t effAddr = addr + x;
+    uint16_t effAddr = addr + (int16_t) x;
     addCyclePreemptable();
     readMemoryByte(effAddr, a);
 }
 
 void CPU::MOV_a_dyB() {
     uint16_t addr    = fetchImmWord();
-    uint16_t effAddr = addr + y;
+    uint16_t effAddr = addr + (int16_t) y;
     addCyclePreemptable();
     readMemoryByte(effAddr, a);
 }
 
 void CPU::MOV_a_dzB() {
     uint16_t addr    = fetchImmWord();
-    uint16_t effAddr = addr + z;
+    uint16_t effAddr = addr + (int16_t) z;
     addCyclePreemptable();
     readMemoryByte(effAddr, a);
 }
@@ -148,21 +148,21 @@ void CPU::MOV_b_izpzB() {
 
 void CPU::MOV_b_dxB() {
     uint16_t addr    = fetchImmWord();
-    uint16_t effAddr = addr + x;
+    uint16_t effAddr = addr + (int16_t) x;
     addCyclePreemptable();
     readMemoryByte(effAddr, b);
 }
 
 void CPU::MOV_b_dyB() {
     uint16_t addr    = fetchImmWord();
-    uint16_t effAddr = addr + y;
+    uint16_t effAddr = addr + (int16_t) y;
     addCyclePreemptable();
     readMemoryByte(effAddr, b);
 }
 
 void CPU::MOV_b_dzB() {
     uint16_t addr    = fetchImmWord();
-    uint16_t effAddr = addr + z;
+    uint16_t effAddr = addr + (int16_t) z;
     addCyclePreemptable();
     readMemoryByte(effAddr, b);
 }
