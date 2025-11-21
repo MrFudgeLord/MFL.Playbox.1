@@ -1,6 +1,6 @@
 #include <cstdint>
 
-class alignas(64) CPU {
+class alignas(64) __single_inheritance CPU {
 private:
     uint8_t a, b, x, y, z, f;
     union {
@@ -17,35 +17,33 @@ private:
         SF = 0b01000000,
         IF = 0b10000000
     };
-    struct {
-        uint8_t  opcode;
-        uint8_t  regmode;
-        uint8_t  addr;
-        uint8_t  disp8;
-        uint16_t disp16;
-        uint8_t  imm8;
-        uint16_t imm16;
-    } instruction;
-    uint8_t insSize;
+    uint16_t addrBus;
+    uint8_t  dataBus;
+    bool     irq;
+    bool     nmi;
+    bool     rst;
 private:
-    uint8_t cycleCount = 0;
-    uint8_t addCyclePreemptable();
+    uint16_t cycleCount = 0;
+    uint8_t  addCyclePreemptable();
 private:
-    void     readMemoryByte(uint16_t addr, uint8_t &dest);
-    void     readMemoryWord(uint16_t addr, uint16_t &dest);
-    void     writeMemoryByte(uint16_t addr, uint8_t &src);
-    void     writeMemoryWord(uint16_t addr, uint16_t &src);
+    void     readMemoryByte(uint16_t addr, uint8_t & dest);
+    void     readMemoryWord(uint16_t addr, uint16_t & dest);
+    void     writeMemoryByte(uint16_t addr, uint8_t & src);
+    void     writeMemoryWord(uint16_t addr, uint16_t & src);
     uint8_t  fetchImmByte();
     uint16_t fetchImmWord();
     void     pushByte(uint8_t val);
     void     pushWord(uint16_t val);
     uint8_t  popByte();
     uint16_t popWord();
-private:
-    void loop();
-    void FDE();
+    void     loop();
+    void     FDE();
+    void     reset();
+    void     nmiInterrupt();
+    void     irqInterrupt();
 private:
     void FAULT_ILLEGAL();
+    void FAULT_BUS();
 private:
     void MOV_a_b();
     void MOV_a_iB();
@@ -93,7 +91,7 @@ private:
     void NOT_b();
     void SSPH_iB();
     void NOP();
-    void INT_iB();
+    void INT();
     void IRET();
     void RET();
     void JMP_d();
