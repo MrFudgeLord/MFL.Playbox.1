@@ -78,6 +78,7 @@ void CPU::JNS_iB() {
 }
 
 void CPU::CALL_d() {
-    i.p = fetchImmWord();
-    pushWord(i.p);
+    uint16_t addr = fetchImmWord();
+    pushWord(i.p + 2);
+    i.p = addr;
 }
