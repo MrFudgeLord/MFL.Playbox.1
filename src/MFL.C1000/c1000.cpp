@@ -45,14 +45,14 @@ uint16_t C1000::popWord() {
 void C1000::FDE() {
     uint8_t opcode = fetchImmByte();
     (this->*opTable[opcode])();
-    if(!rst) {
+    if(!rst.val) {
         reset();
     }
-    if(!nmi) {
+    if(!nmi.val) {
         nmiInterrupt();
     }
     if(f & IF) {
-        if(!irq) irqInterrupt();
+        if(!irq.val) irqInterrupt();
     }
 }
 
@@ -74,21 +74,21 @@ void C1000::reset() {
     addCyclePreemptable();
     f = 0b10000000;
     addCyclePreemptable();
-    nmi = false;
-    irq = false;
-    rst = false;
+    nmi.val = false;
+    irq.val = false;
+    rst.val = false;
 }
 
 void C1000::nmiInterrupt() {
     pushWord(i.p);
     pushByte(f);
     readMemoryWord(0xFFFC, i.p);
-    nmi = false;
+    nmi.val = false;
 }
 
 void C1000::irqInterrupt() {
     pushWord(i.p);
     pushByte(f);
     readMemoryWord(0xFFFA, i.p);
-    irq = false;
+    irq.val = false;
 }
