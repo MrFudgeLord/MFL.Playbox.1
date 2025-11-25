@@ -20,5 +20,7 @@ void C1000::IRET() {
 }
 
 void C1000::HALT() {
-    FAULT_ILLEGAL();
+    while(!irq.val) {
+        addCyclePreemptable();
+    }
 }

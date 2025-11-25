@@ -15,8 +15,16 @@ class alignas(64) M1000 : public device {
 public:
     B2000     dataBus;
     B2100     addrBus;
-    B1002<14> memBankDecoder {addrBus};
+    B2310     rwBus;
+    B2310     nmiBus;
+    B2310     irqBus;
+    B2310     rstBus;
+    B1002<10> memBankDecoder {addrBus};
     B1004<12> memMapDecoder {addrBus};
-    S1000     workRAM[4];
-    C1000     CPU;
+    S1000     workRAM[4] = {S1000 {dataBus, addrBus, rwBus},
+                            S1000 {dataBus, addrBus, rwBus},
+                            S1000 {dataBus, addrBus, rwBus},
+                            S1000 {dataBus, addrBus, rwBus}};
+    C1000     CPU {memMapDecoder, dataBus, addrBus, rwBus, nmiBus, irqBus, rstBus};
+    M1000();
 };
