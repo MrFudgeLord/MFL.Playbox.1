@@ -1,5 +1,50 @@
 #include "c1000.hpp"
 
+uint8_t C1000::addCyclePreemptable() {
+    return 0;
+}
+
+void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
+    rw.val      = false;
+    addrBus.val = addr;
+    decoder.signal();
+    dest = dataBus.val;
+    addCyclePreemptable();
+}
+
+void C1000::readMemoryWord(uint16_t addr, uint16_t &dest) {
+    rw.val      = false;
+    addrBus.val = addr + 1;
+    decoder.signal();
+    dest = dataBus.val;
+    addCyclePreemptable();
+    rw.val      = false;
+    addrBus.val = addr;
+    decoder.signal();
+    dest = dataBus.val;
+}
+
+void C1000::writeMemoryByte(uint16_t addr, uint8_t &src) {
+    rw.val      = true;
+    addrBus.val = addr;
+    dataBus.val = src;
+    decoder.signal();
+    addCyclePreemptable();
+}
+
+void C1000::writeMemoryWord(uint16_t addr, uint16_t &src) {
+    rw.val      = true;
+    addrBus.val = addr;
+    dataBus.val = (uint8_t) src;
+    decoder.signal();
+    addCyclePreemptable();
+    rw.val      = true;
+    addrBus.val = addr + 1;
+    dataBus.val = src >> 8;
+    decoder.signal();
+    addCyclePreemptable();
+}
+
 uint8_t C1000::fetchImmByte() {
     uint8_t val;
     readMemoryByte(i.p, val);
@@ -43,8 +88,6 @@ uint16_t C1000::popWord() {
 }
 
 void C1000::FDE() {
-    uint8_t opcode = fetchImmByte();
-    (this->*opTable[opcode])();
     if(!rst.val) {
         reset();
     }
@@ -54,6 +97,8 @@ void C1000::FDE() {
     if(f & IF) {
         if(!irq.val) irqInterrupt();
     }
+    uint8_t opcode = fetchImmByte();
+    (this->*opTable[opcode])();
 }
 
 void C1000::reset() {
