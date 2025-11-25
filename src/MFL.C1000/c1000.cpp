@@ -117,7 +117,7 @@ void C1000::reset() {
     addCyclePreemptable();
     z = 0;
     addCyclePreemptable();
-    f = 0b10000000;
+    f = IF;
     addCyclePreemptable();
     nmi.val = false;
     irq.val = false;
