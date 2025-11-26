@@ -12,7 +12,7 @@ class alignas(64) S1000 : public signaledDevice {
     B2100 &addrBus;
     B2310 &controlBus;
 public:
-    const static uint16_t MEM_SIZE = 1 << 10;
+    const static uint32_t MEM_SIZE = 1 << 10;
     uint8_t               memory[MEM_SIZE];
     void                  initMemory();
     void                  signal() override;
