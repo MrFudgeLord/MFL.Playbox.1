@@ -7,11 +7,11 @@
 #include "..\MFL.B2100\b2100.hpp"
 
 template <uint8_t addrOffset>
-class B1002 : public device {
+class B1002 : public signaledDevice {
     B2100 &addrBus;
 public:
     signaledDevice *signalDevices[4];
-    void            signal();
+    void            signal() override;
     B1002(B2100 &a)
         : addrBus(a) {};
 };
