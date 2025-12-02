@@ -1,0 +1,43 @@
+256x240 @ 60fps
+
+Background: 8x8 tiles (32x30)
+
+Tilemap: Structure of 1-byte indices into the tile table
+
+Tile table: Structure containing tile definitions
+
+    Tile definitions: array of 3 bit palette indices per pixel. One row is 3 bytes (8 pixels * 3 bits = 24 bits)
+
+Color palette: Whole palette is 6-bit (00 is transparent)
+
+Frame palettes: 4 background palettes of 8 colors each
+
+Palette table: 60-byte table; 2 bits per tile definition sets which background palette it uses
+
+VRAM memory map (in the larger memory map):
+
+1000:13BF   Tilemap 00
+13C0:13FB   Palette table 00
+13FC:13FF   ***
+1400:17BF   Tilemap 01
+17C0:17FB   Palette table 01
+17FC:17FF   ***
+1800:1BBF   Tilemap 10
+1BC0:1BFB   Palette table 10
+1BFC:1BFF   ***
+1C00:1FBF   Tilemap 11
+1FC0:1FFB   Palette table 11
+1FFC:1FFF   ***
+2000:20FF   Sprite table
+2100:213F   Frame palettes
+2140:21FF   ***
+
+Rendering: Per scanline... 108 CPU cycles per scanline. 
+    Iterate over all 32 tiles containing the scanline:
+        Fetch the tile palette bits by dividing tile X by 2, dividing tile Y by 2.
+        For the relevant 3 bytes (row of 8x3) of the tile pointed to, combine with the tile palette
+        If the bottom 3 bits are 0 (transparent), replace with backdrop color
+        Use palette-indexed color to fetch the actual RGB values of color
+        Write to pixel framebuffer
+        Pixel framebuffer doubled to create 2-pixel tall scanline
+        Write pixel value >> 4 to the inactive scanline to simulate bleed

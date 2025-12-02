@@ -1,12 +1,13 @@
 #include <cstdint>
 
+#include "..\processor.hpp"
 #include "..\scheduledDevice.hpp"
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B2000\b2000.hpp"
 #include "..\MFL.B2100\b2100.hpp"
 #include "..\MFL.B2310\b2310.hpp"
 
-class alignas(64) C1000 : public scheduledDevice, public signaledDevice {
+class alignas(64) V1000 : public processor, public scheduledDevice, public signaledDevice {
     signaledDevice &decoder;
     B2000          &dataBus;
     B2100          &addrBus;
@@ -23,14 +24,7 @@ public:
             uint8_t l;
         };
     } s, i;
-    enum flags {
-        CF = 0b00000001,
-        IF = 0b00010000,
-        OF = 0b00100000,
-        ZF = 0b01000000,
-        SF = 0b10000000
-    };
-    C1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq, B2310 &crst)
+    V1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq, B2310 &crst)
         : decoder(dc), dataBus(d), addrBus(a), rw(crw), nmi(cnmi), irq(cirq), rst(crst) {};
     uint32_t cycleCount = 0;
     uint8_t  addCyclePreemptable();
@@ -48,6 +42,5 @@ private:
     void     loop();
     void     FDE();
     void     reset();
-    void     nmiInterrupt();
-    void     irqInterrupt();
+    void     renderScanline();
 };

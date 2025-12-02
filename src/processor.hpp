@@ -7,6 +7,7 @@
 class processor : public device {
 public:
     static uint32_t nextEventClock;
-    virtual void    run();
+    uint32_t        clock;
     void            addCyclePreemptable();
+    virtual void    run();
 };

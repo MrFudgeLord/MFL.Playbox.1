@@ -10,25 +10,24 @@ bool operator<(event lhs, event rhs) {
 }
 
 uint8_t registerProcessor(processor *p) {
+    assert(processorCount < 16);
     processors[processorCount] = p;
     return processorCount++;
 }
 
-uint8_t registerCallback(scheduledDevice *device, void (scheduledDevice::*callback)()) {
-    static uint8_t nextIndex = 0;
-    assert(nextIndex < 255);
-    devices[nextIndex]         = device;
-    deviceCallbacks[nextIndex] = callback;
-    return nextIndex++;
+uint8_t registerCallback(scheduledDevice *device) {
+    assert(deviceCount < 32);
+    devices[deviceCount] = device;
+    return (deviceCount++) << 3;
 }
 
 void scheduleEvent(event e) {
 #ifdef DET_SEQ
     static uint8_t seq   = 0;
-    e.timeSeq          <<= 8;
-    if((eventQueue.top().timeSeq & 0xffff'ff00) == (e.timeSeq)) {
+    e.timeSeq          <<= 4;
+    if((eventQueue.top().timeSeq & 0xff'fff0) == (e.timeSeq)) {
         seq = eventQueue.top().timeSeq;
-        assert(seq < 255);
+        assert(seq < 16);
         seq++;
         e.timeSeq |= seq;
     }
@@ -42,9 +41,16 @@ void tick() {
     for(int i = 0; i < processorCount; i++) {
         processors[i]->run();
     }
-    scheduledDevice *eventDevice                         = devices[nextEvent.callbackIndex];
-    void             (scheduledDevice::*eventCallback)() = deviceCallbacks[nextEvent.callbackIndex];
-    (eventDevice->*eventCallback)();
+    devices[nextEvent.deviceIndex]->dispatchEvent(nextEvent.callbackIndex, nextEvent.data);
 }
 
 } // namespace scheduler
+
+void frameEndDummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
+    using namespace scheduler;
+    mainClock      = 0;
+    event frameEnd = {
+        .deviceIndex = deviceNumber,
+        .timeSeq     = 20'736};
+    scheduleEvent(frameEnd);
+}

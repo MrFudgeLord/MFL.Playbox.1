@@ -1,9 +1,5 @@
 #include "c1000.hpp"
 
-uint8_t C1000::addCyclePreemptable() {
-    return 0;
-}
-
 void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
     rw.val      = false;
     addrBus.val = addr;

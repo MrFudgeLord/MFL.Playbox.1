@@ -11,10 +11,16 @@
 
 namespace scheduler {
 
+// CPU clock: 1,697,760 (2^3 * 3^3 * 131 * 60)
+//
+
+uint32_t mainClock = 0;
+
 struct event {
-    uint32_t timeSeq;
-    uint8_t  callbackIndex;
-    uint8_t  data[3];
+    uint32_t deviceIndex   : 5;
+    uint32_t callbackIndex : 3;
+    uint32_t timeSeq       : 24;
+    uint8_t  data[4];
 };
 
 bool                       operator<(event, event);
@@ -26,8 +32,14 @@ uint8_t    processorCount = 0;
 processor *processors[16];
 uint8_t    registerProcessor(processor *p);
 
-scheduledDevice *devices[256];
-void             (scheduledDevice::*deviceCallbacks[256])();
-uint8_t          registerCallback(scheduledDevice *device, void (scheduledDevice::*callback)());
+uint8_t          deviceCount = 0;
+scheduledDevice *devices[32];
+uint8_t          registerDevice(scheduledDevice *device);
 
 } // namespace scheduler
+
+class frameEndDummy : public scheduledDevice {
+    uint8_t deviceNumber;
+    void    dispatchEvent(uint8_t index, uint8_t data[4]) override;
+    frameEndDummy() : deviceNumber(scheduler::registerDevice(this)) {};
+};

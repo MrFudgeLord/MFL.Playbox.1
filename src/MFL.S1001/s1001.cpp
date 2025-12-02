@@ -1,14 +1,14 @@
-#include "s1000.hpp"
+#include "s1001.hpp"
 #include <cstdlib>
 
-bool S1000::initialize() {
+bool S1001::initialize() {
     for(int i = 0; i < MEM_SIZE / 4; i++) {
         ((uint32_t *) memory)[i] = rand();
     }
     return false;
 }
 
-void S1000::signal() {
+void S1001::signal() {
     if(controlBus.val) {
         memory[addrBus.val & (MEM_SIZE - 1)] = dataBus.val;
     } else {

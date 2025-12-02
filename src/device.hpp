@@ -1,4 +1,5 @@
 #pragma once
 
-volatile class device {
+class device {
+    virtual bool initialize();
 };

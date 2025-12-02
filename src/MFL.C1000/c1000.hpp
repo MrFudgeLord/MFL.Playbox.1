@@ -1,12 +1,15 @@
 #include <cstdint>
 
-#include "..\scheduledDevice.hpp"
+#include "..\processor.hpp"
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B2000\b2000.hpp"
 #include "..\MFL.B2100\b2100.hpp"
 #include "..\MFL.B2310\b2310.hpp"
 
-class alignas(64) C1000 : public scheduledDevice {
+#define CPU_FREQ        1'658'880 // 60 * CLOCK_PER_FRAME
+#define CLOCK_PER_FRAME 27'648    // 2^10 * 3^3
+
+class alignas(64) C1000 : public processor {
     signaledDevice &decoder;
     B2000          &dataBus;
     B2100          &addrBus;
@@ -32,8 +35,6 @@ public:
     };
     C1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq, B2310 &crst)
         : decoder(dc), dataBus(d), addrBus(a), rw(crw), nmi(cnmi), irq(cirq), rst(crst) {};
-    uint32_t cycleCount = 0;
-    uint8_t  addCyclePreemptable();
 private:
     void     readMemoryByte(uint16_t addr, uint8_t &dest);
     void     readMemoryWord(uint16_t addr, uint16_t &dest);
