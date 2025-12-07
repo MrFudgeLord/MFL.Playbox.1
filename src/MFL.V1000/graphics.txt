@@ -1,6 +1,6 @@
 256x240 @ 60fps
 
-Background: 8x8 tiles (32x30)
+Background: 8x8 tiles (32x32)
 
 Tilemap: Structure of 1-byte indices into the tile table
 
@@ -10,33 +10,46 @@ Tile table: Structure containing tile definitions
 
 Color palette: Whole palette is 6-bit (00 is transparent)
 
-Frame palettes: 4 background palettes of 8 colors each
+Frame palettes: 4 background palettes of 8 colors each, 8 sprite palettes of 8 colors each
 
-Palette table: 60-byte table; 2 bits per tile definition sets which background palette it uses
+    Frame background palette 0, index 0 defines the backdrop color
+
+Palette table: 256-byte table; 2 bits per group of 2 tiles (in tilemap) sets which background palette it uses
 
 VRAM memory map (in the larger memory map):
 
-1000:13BF   Tilemap 00
-13C0:13FB   Palette table 00
-13FC:13FF   ***
-1400:17BF   Tilemap 01
-17C0:17FB   Palette table 01
-17FC:17FF   ***
-1800:1BBF   Tilemap 10
-1BC0:1BFB   Palette table 10
-1BFC:1BFF   ***
-1C00:1FBF   Tilemap 11
-1FC0:1FFB   Palette table 11
-1FFC:1FFF   ***
-2000:20FF   Sprite table
-2100:213F   Frame palettes
-2140:21FF   ***
+0000:0FFF   Work RAM
+1000:17FF   Tilemap
+1800:18FF   Palette table
+1900:19FF   Sprite table
+1A00:1FFF   ***
+2000:2FFF   Hardware registers
+3000:3FFF   Expansion port?
+4000:4FFF   Tile table 0
+5000:5FFF   Tile table 1
+6000:FFFF   Cartridge
+
+a (tile address) register:
+
+    00010 yyyyy xxxxxx
+          ||||| ++++++---Tile select X
+          +++++----------Tile select Y
+
+    Used to select the tile being drawn
+
+x (pixel select x) register:
+
+    00000 xxx
+
+y (pixel select y) register:
+
+    00000 yyy
 
 Rendering: Per scanline... 108 CPU cycles per scanline. 
     Iterate over all 32 tiles containing the scanline:
-        Fetch the tile palette bits by dividing tile X by 2, dividing tile Y by 2.
+        Fetch the tile palette bits by getting byte (tileIndex)/4, bits at tileIndex % 4 * 2
+        If the bottom 3 bits are 0 (transparent), replace with background color and skip next step
         For the relevant 3 bytes (row of 8x3) of the tile pointed to, combine with the tile palette
-        If the bottom 3 bits are 0 (transparent), replace with backdrop color
         Use palette-indexed color to fetch the actual RGB values of color
         Write to pixel framebuffer
         Pixel framebuffer doubled to create 2-pixel tall scanline

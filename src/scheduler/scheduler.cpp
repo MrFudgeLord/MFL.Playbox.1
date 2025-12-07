@@ -15,10 +15,10 @@ uint8_t registerProcessor(processor *p) {
     return processorCount++;
 }
 
-uint8_t registerCallback(scheduledDevice *device) {
+uint8_t registerDevice(scheduledDevice *device) {
     assert(deviceCount < 32);
     devices[deviceCount] = device;
-    return (deviceCount++) << 3;
+    return deviceCount++;
 }
 
 void scheduleEvent(event e) {
@@ -48,9 +48,6 @@ void tick() {
 
 void frameEndDummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
     using namespace scheduler;
-    mainClock      = 0;
-    event frameEnd = {
-        .deviceIndex = deviceNumber,
-        .timeSeq     = 20'736};
-    scheduleEvent(frameEnd);
+    mainClock = 0;
+    scheduleEvent({.deviceIndex = deviceNumber, .timeSeq = 28'296});
 }

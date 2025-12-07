@@ -15,32 +15,31 @@ class alignas(64) V1000 : public processor, public scheduledDevice, public signa
     B2310          &nmi;
     B2310          &irq;
     B2310          &rst;
-public:
-    uint8_t a, b, x, y, z, f;
-    union {
-        uint16_t p;
-        struct {
-            uint8_t h;
-            uint8_t l;
-        };
-    } s, i;
-    V1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq, B2310 &crst)
-        : decoder(dc), dataBus(d), addrBus(a), rw(crw), nmi(cnmi), irq(cirq), rst(crst) {};
-    uint32_t cycleCount = 0;
-    uint8_t  addCyclePreemptable();
 private:
-    void     readMemoryByte(uint16_t addr, uint8_t &dest);
-    void     readMemoryWord(uint16_t addr, uint16_t &dest);
-    void     writeMemoryByte(uint16_t addr, uint8_t &src);
-    void     writeMemoryWord(uint16_t addr, uint16_t &src);
-    uint8_t  fetchImmByte();
-    uint16_t fetchImmWord();
-    void     pushByte(uint8_t val);
-    void     pushWord(uint16_t val);
-    uint8_t  popByte();
-    uint16_t popWord();
-    void     loop();
-    void     FDE();
-    void     reset();
-    void     renderScanline();
+    // VRAM memory map
+    const static uint16_t VRAM_BASE = 0x1000;
+    const static uint16_t TM_OFFSET = 0x0000;
+    const static uint16_t PT_OFFSET = 0x0800;
+    const static uint16_t ST_OFFSET = 0x0A00;
+    // Cartridge memory map
+    const static uint16_t TT0_BASE = 0x4000;
+    const static uint16_t TT1_BASE = 0x5000;
+    // Internal memory map
+    const static uint8_t BP_OFFSET = 0x00;
+    const static uint8_t SP_OFFSET = 0x10;
+    const static uint8_t AS_OFFSET = 0x60;
+private:
+    struct {
+        uint8_t r, g, b;
+    } displayColors[64];
+    uint8_t *scanlineBuffer; // uint8_t[768][4]
+public:
+    uint8_t  x, y, ctrl;
+    uint16_t a;
+    uint8_t  mem[128];
+    V1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq, B2310 &crst);
+    bool initialize() override;
+    void dispatchEvent(uint8_t index, uint8_t data[4]) override;
+private:
+    void renderScanline();
 };
