@@ -18,7 +18,7 @@ void V1000::dispatchEvent(uint8_t index, uint8_t data[4]) {
 }
 
 void V1000::renderScanline() {
-    int8_t   indexDiff   = 32 - (a & 0x3f);
+    int8_t   indexDiff   = 32 - ((a & 0x3f) *);
     uint8_t  paletteBits = 0;
     uint16_t ttBase      = (ctrl & 0b00000010) ? TT0_BASE : TT1_BASE;
     if(indexDiff > 0) { // No wrapping
@@ -30,22 +30,23 @@ void V1000::renderScanline() {
             paletteBits >>= (2 * (i % 4));
             paletteBits  &= 0x03;
             paletteBits <<= 3;
-            addCyclePreemptable();
             for(int j = 0; j < 2; j++) {
                 uint8_t  tileIndex  = 0;
                 uint32_t tilePixels = 0;
                 // get tile index
+                // we render
                 addrBus.val = a;
                 decoder.signal();
                 tileIndex = dataBus.val;
                 // get pixels for tile
-                addrBus.val = ttBase + tileIndex;
+                uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
+                addrBus.val          = tileAddress;
                 decoder.signal();
                 ((uint8_t *) &tilePixels)[3] = dataBus.val;
-                addrBus.val                  = ttBase + tileIndex;
+                addrBus.val                  = tileAddress + 1;
                 decoder.signal();
                 ((uint8_t *) &tilePixels)[2] = dataBus.val;
-                addrBus.val                  = ttBase + tileIndex;
+                addrBus.val                  = tileAddress + 2;
                 decoder.signal();
                 ((uint8_t *) &tilePixels)[1] = dataBus.val;
                 for(int k = 0; k < 8; k++) {
@@ -77,6 +78,6 @@ void V1000::renderScanline() {
                 }
             }
         }
-    } else { // Wrapping
+    } else { // Wrapping at tile (32 - indexDiff)
     }
 }

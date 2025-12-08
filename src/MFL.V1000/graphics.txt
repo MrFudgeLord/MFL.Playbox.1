@@ -45,7 +45,7 @@ y (pixel select y) register:
 
     00000 yyy
 
-Rendering: Per scanline... 108 CPU cycles per scanline. 
+Rendering: Per scanline... 108 CPU cycles per scanline.
     Iterate over all 32 tiles containing the scanline:
         Fetch the tile palette bits by getting byte (tileIndex)/4, bits at tileIndex % 4 * 2
         If the bottom 3 bits are 0 (transparent), replace with background color and skip next step
