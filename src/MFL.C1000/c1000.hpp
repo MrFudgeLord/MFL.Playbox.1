@@ -6,9 +6,6 @@
 #include "..\MFL.B2100\b2100.hpp"
 #include "..\MFL.B2310\b2310.hpp"
 
-#define CPU_FREQ        1'658'880 // 60 * CLOCK_PER_FRAME
-#define CLOCK_PER_FRAME 27'648    // 2^10 * 3^3
-
 class alignas(64) C1000 : public processor {
     signaledDevice &decoder;
     B2000          &dataBus;

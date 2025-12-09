@@ -35,7 +35,7 @@ struct event {
 bool                       operator<(event, event);
 std::priority_queue<event> eventQueue;
 void                       scheduleEvent(event e);
-void                       tick();
+bool                       tick();
 
 uint8_t    processorCount = 0;
 processor *processors[16];

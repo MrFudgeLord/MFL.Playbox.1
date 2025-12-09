@@ -1,7 +1,7 @@
 #include "m1000.hpp"
 
 M1000::M1000() {
-    memBankDecoder.signalDevices[0] = &workRAM[0];
+    workRAMDecoder.signalDevices[0] = &workRAM[0];
     workRAM[0].initialize();
     memBankDecoder.signalDevices[1] = &workRAM[1];
     workRAM[1].initialize();

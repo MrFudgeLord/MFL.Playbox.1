@@ -35,7 +35,7 @@ void scheduleEvent(event e) {
     eventQueue.push(e);
 }
 
-void tick() {
+bool tick() {
     event nextEvent           = eventQueue.top();
     processor::nextEventClock = nextEvent.timeSeq;
     for(int i = 0; i < processorCount; i++) {

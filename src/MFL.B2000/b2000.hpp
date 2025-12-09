@@ -6,5 +6,5 @@
 
 class B2000 : public device {
 public:
-    uint8_t val;
+    volatile uint8_t val;
 };

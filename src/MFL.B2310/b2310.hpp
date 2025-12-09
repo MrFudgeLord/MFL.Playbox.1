@@ -4,5 +4,5 @@
 
 class B2310 : public device {
 public:
-    bool val;
+    volatile bool val;
 };

@@ -6,5 +6,5 @@
 
 class B2100 : public device {
 public:
-    uint16_t val;
+    volatile uint16_t val;
 };
