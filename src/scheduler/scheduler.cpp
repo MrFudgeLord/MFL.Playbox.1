@@ -45,9 +45,3 @@ bool tick() {
 }
 
 } // namespace scheduler
-
-void frameEndDummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
-    using namespace scheduler;
-    mainClock = 0;
-    scheduleEvent({.deviceIndex = deviceNumber, .timeSeq = 28'296});
-}

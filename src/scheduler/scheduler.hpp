@@ -46,9 +46,3 @@ scheduledDevice *devices[32];
 uint8_t          registerDevice(scheduledDevice *device);
 
 } // namespace scheduler
-
-class frameEndDummy : public scheduledDevice {
-    uint8_t deviceNumber;
-    void    dispatchEvent(uint8_t index, uint8_t data[4]) override;
-    frameEndDummy() : deviceNumber(scheduler::registerDevice(this)) {};
-};

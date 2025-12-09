@@ -1,14 +1,16 @@
 #include "m1000.hpp"
 
 M1000::M1000() {
-    workRAMDecoder.signalDevices[0] = &workRAM[0];
-    workRAM[0].initialize();
-    memBankDecoder.signalDevices[1] = &workRAM[1];
-    workRAM[1].initialize();
-    memBankDecoder.signalDevices[2] = &workRAM[2];
-    workRAM[2].initialize();
-    memBankDecoder.signalDevices[3] = &workRAM[3];
-    workRAM[3].initialize();
+    workRAMDecoder.signalDevices[0] = &workRAM1;
+    workRAM1.initialize();
+    workRAMDecoder.signalDevices[1] = &workRAM2;
+    workRAM2.initialize();
+    workRAMDecoder.signalDevices[2] = &workRAM3;
+    workRAM3.initialize();
+    workRAMDecoder.signalDevices[3] = &workRAM4;
+    workRAM4.initialize();
 
-    memMapDecoder.signalDevices[0] = &memBankDecoder;
+    memMapDecoder.signalDevices[0] = &workRAMDecoder;
+    videoRAMDecoder.signalDevices[0] =
+      memMapDecoder.signalDevices[1] = &videoRAMDecoder;
 }

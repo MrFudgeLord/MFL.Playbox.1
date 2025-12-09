@@ -94,7 +94,8 @@ private:
         {0x00, 0x15, 0x33},
         {0x0a, 0x00, 0x33},
         {0x29, 0x00, 0x33},
-        {0x33, 0x00, 0x1f}};
+        {0x33, 0x00, 0x1f},
+    };
     uint8_t *scanlineBuffer; // uint8_t[768][4]
     uint8_t  pixelPaletteColors[33][8] {};
 public:
@@ -105,7 +106,7 @@ public:
     bool initialize() override;
     void dispatchEvent(uint8_t index, uint8_t data[4]) override;
 private:
-    void renderScanline();
-    void vBlank();
-    void hBlank();
+    void renderScanline(uint8_t data[4]);
+    void vBlank(uint8_t data[4]);
+    void hBlank(uint8_t data[4]);
 };
