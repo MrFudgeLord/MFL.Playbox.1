@@ -14,6 +14,7 @@
 class alignas(64) M1000 : public device {
 public:
     B1002<10> workRAMDecoder {addrBus};
+    B1002<10> videoRAMDecoder {addrBus};
     B1004<12> memMapDecoder {addrBus};
     B2000     dataBus;
     B2100     addrBus;

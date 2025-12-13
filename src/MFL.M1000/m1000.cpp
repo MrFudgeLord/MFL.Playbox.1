@@ -10,7 +10,10 @@ M1000::M1000() {
     workRAMDecoder.signalDevices[3] = &workRAM4;
     workRAM4.initialize();
 
-    memMapDecoder.signalDevices[0] = &workRAMDecoder;
-    videoRAMDecoder.signalDevices[0] =
+    memMapDecoder.signalDevices[0]   = &workRAMDecoder;
+    videoRAMDecoder.signalDevices[0] = &videoRAM1;
+    videoRAMDecoder.signalDevices[1] = &videoRAM2;
+    videoRAMDecoder.signalDevices[2] = &videoRAM3;
+    videoRAMDecoder.signalDevices[3] =
       memMapDecoder.signalDevices[1] = &videoRAMDecoder;
 }
