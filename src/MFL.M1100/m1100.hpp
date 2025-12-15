@@ -9,8 +9,9 @@
 #include "..\MFL.B3000\b3000.hpp"
 #include "..\MFL.B3050\b3050.hpp"
 #include "..\MFL.B3100\b3100.hpp"
+#include "..\MFL.B3900\b3900.hpp"
 
-class alignas(64) M1100 : public device {
+class alignas(64) M1100 : public B3900 {
 public:
     B3000 *CPU;
     B3050 *VDP;

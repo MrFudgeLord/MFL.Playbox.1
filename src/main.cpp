@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     std::fstream cartFileStream(cartPath);
     uint8_t      mbType;
     cartFileStream.read((char *) &mbType, 1);
-    signaledDevice *cartMB;
+    B3900 *cartMB;
 
     C1000 CPU;
     S1003 workRAM_1;
@@ -21,9 +21,20 @@ int main(int argc, char *argv[]) {
     S1003 videoRAM_2;
     S1002 videoRAM_3;
     V1000 VDP;
+    P1000 controller;
 
     M1000 MB {
-        &CPU, &VDP, &workRAM_1, &workRAM_2, &workRAM_3, &workRAM_4, &videoRAM_1, &videoRAM_2, &videoRAM_3};
+        &CPU,
+        &VDP,
+        &workRAM_1,
+        &workRAM_2,
+        &workRAM_3,
+        &workRAM_4,
+        &videoRAM_1,
+        &videoRAM_2,
+        &videoRAM_3,
+        &controller,
+        &cartMB};
 
     return 0;
 }

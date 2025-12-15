@@ -7,5 +7,5 @@
 class scheduledDevice : public device {
 public:
     uint8_t      deviceID;
-    virtual void dispatchEvent(uint8_t index, uint8_t data[4]);
+    virtual bool dispatchEvent(uint8_t index, uint8_t data[4]); // return true if blocking?
 };

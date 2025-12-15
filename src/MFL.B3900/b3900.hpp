@@ -15,5 +15,5 @@ protected:
     B2310          *irq;
     B2310          *rst;
 public:
-    virtual bool initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst);
+    virtual bool initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq);
 };

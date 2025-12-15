@@ -6,7 +6,7 @@
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B3050\b3050.hpp"
 
-class alignas(64) V1000 : public B3050, public scheduledDevice, public signaledDevice {
+class alignas(64) V1000 : public B3050, public scheduledDevice {
     // VRAM memory map
     const static uint16_t VRAM_BASE = 0x1000;
     const static uint16_t TM_OFFSET = 0x0000;
@@ -93,11 +93,14 @@ private:
 public:
     uint8_t  x, y, ctrl;
     uint16_t a;
+    uint8_t  tempMem[128];
     uint8_t  mem[128];
+    V1000();
     bool     initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq) override;
-    void     dispatchEvent(uint8_t index, uint8_t data[4]) override;
+    uint32_t signal() override;
+    bool     dispatchEvent(uint8_t index, uint8_t data[4]) override;
 private:
-    void renderScanline(uint8_t data[4]);
-    void vBlank(uint8_t data[4]);
-    void hBlank(uint8_t data[4]);
+    bool renderScanline(uint8_t data[4]);
+    bool vBlank(uint8_t data[4]);
+    bool hBlank(uint8_t data[4]);
 };

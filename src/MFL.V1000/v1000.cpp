@@ -2,20 +2,36 @@
 #include "..\scheduler\scheduler.hpp"
 #include <cstddef>
 
-V1000::V1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq)
-    : decoder(dc), dataBus(d), addrBus(a), rw(crw), nmi(cnmi), irq(cirq) {
+V1000::V1000() {
     deviceID = scheduler::registerDevice(this);
+    x        = 0;
+    y        = 0;
+    a        = VRAM_BASE + TM_OFFSET;
 };
 
-bool V1000::initialize() {
-    x = 0;
-    y = 0;
-    a = VRAM_BASE + TM_OFFSET;
+bool V1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq) {
+    signalHandler = sh;
+    dataBus       = d;
+    addrBus       = a;
+    rw            = crw;
+    nmi           = cnmi;
+    irq           = cirq;
     return false;
 }
 
-void V1000::dispatchEvent(uint8_t index, uint8_t data[4]) {
-    static void (V1000::*eventHandlers[8])(uint8_t[4]) = {
+uint32_t V1000::signal() {
+    uint16_t maskedAddr = addrBus->val & 0x000f;
+    switch(maskedAddr) {
+        case 0x0:
+            break;
+        case 0x1:
+            break;
+    }
+    return 1;
+}
+
+bool V1000::dispatchEvent(uint8_t index, uint8_t data[4]) {
+    static bool (V1000::*eventHandlers[8])(uint8_t[4]) = {
         &V1000::renderScanline,
         &V1000::vBlank,
         NULL,
@@ -24,10 +40,10 @@ void V1000::dispatchEvent(uint8_t index, uint8_t data[4]) {
         NULL,
         NULL,
         NULL};
-    (this->*eventHandlers[index])(data);
+    return (this->*eventHandlers[index])(data);
 }
 
-void V1000::renderScanline(uint8_t data[4]) {
+bool V1000::renderScanline(uint8_t data[4]) {
     int8_t   lastTileIndex = (a & 0x3f) + 32;
     uint8_t  paletteBits   = 0;
     uint16_t ttBase        = (ctrl & 0b00000010) ? TT0_BASE : TT1_BASE;
@@ -35,10 +51,10 @@ void V1000::renderScanline(uint8_t data[4]) {
         if(lastTileIndex < 64) { // No wrapping
             for(int i = 0; i < 16; i++) {
                 // get palette bits for the tile pair
-                rw.val      = false;
-                addrBus.val = VRAM_BASE + PT_OFFSET + i;
-                decoder.signal();
-                paletteBits   = dataBus.val;
+                rw->val      = false;
+                addrBus->val = VRAM_BASE + PT_OFFSET + i;
+                signalHandler->signal();
+                paletteBits   = dataBus->val;
                 paletteBits >>= (2 * (i % 4));
                 paletteBits  &= 0x03;
                 paletteBits <<= 3;
@@ -47,20 +63,20 @@ void V1000::renderScanline(uint8_t data[4]) {
                     uint32_t tilePixels = 0;
                     // get tile index
                     // we render
-                    addrBus.val = a;
-                    decoder.signal();
-                    tileIndex = dataBus.val;
+                    addrBus->val = a;
+                    signalHandler->signal();
+                    tileIndex = dataBus->val;
                     // get pixels for tile
                     uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
-                    addrBus.val          = tileAddress;
-                    decoder.signal();
-                    ((uint8_t *) &tilePixels)[3] = dataBus.val;
-                    addrBus.val                  = tileAddress + 1;
-                    decoder.signal();
-                    ((uint8_t *) &tilePixels)[2] = dataBus.val;
-                    addrBus.val                  = tileAddress + 2;
-                    decoder.signal();
-                    ((uint8_t *) &tilePixels)[1] = dataBus.val;
+                    addrBus->val         = tileAddress;
+                    signalHandler->signal();
+                    ((uint8_t *) &tilePixels)[3] = dataBus->val;
+                    addrBus->val                 = tileAddress + 1;
+                    signalHandler->signal();
+                    ((uint8_t *) &tilePixels)[2] = dataBus->val;
+                    addrBus->val                 = tileAddress + 2;
+                    signalHandler->signal();
+                    ((uint8_t *) &tilePixels)[1] = dataBus->val;
                     for(int k = 0; k < 8; k++) {
                         uint8_t paletteColor = mem[BP_OFFSET];
                         uint8_t pixels       = tilePixels & 0x03;
@@ -79,21 +95,20 @@ void V1000::renderScanline(uint8_t data[4]) {
                 uint8_t  tileIndex  = 0;
                 uint32_t tilePixels = 0;
                 // get tile index
-                // we render
-                addrBus.val = a;
-                decoder.signal();
-                tileIndex = dataBus.val;
+                addrBus->val = a;
+                signalHandler->signal();
+                tileIndex = dataBus->val;
                 // get pixels for tile
                 uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
-                addrBus.val          = tileAddress;
-                decoder.signal();
-                ((uint8_t *) &tilePixels)[3] = dataBus.val;
-                addrBus.val                  = tileAddress + 1;
-                decoder.signal();
-                ((uint8_t *) &tilePixels)[2] = dataBus.val;
-                addrBus.val                  = tileAddress + 2;
-                decoder.signal();
-                ((uint8_t *) &tilePixels)[1] = dataBus.val;
+                addrBus->val         = tileAddress;
+                signalHandler->signal();
+                ((uint8_t *) &tilePixels)[3] = dataBus->val;
+                addrBus->val                 = tileAddress + 1;
+                signalHandler->signal();
+                ((uint8_t *) &tilePixels)[2] = dataBus->val;
+                addrBus->val                 = tileAddress + 2;
+                signalHandler->signal();
+                ((uint8_t *) &tilePixels)[1] = dataBus->val;
                 for(int k = 0; k < 8; k++) {
                     uint8_t paletteColor = mem[BP_OFFSET];
                     uint8_t pixels       = tilePixels & 0x03;
@@ -109,9 +124,9 @@ void V1000::renderScanline(uint8_t data[4]) {
             uint8_t wrapTileIndex = lastTileIndex - 63;
             for(int i = 0; i < 16; i++) {
                 // get palette bits for the tile pair
-                addrBus.val = VRAM_BASE + PT_OFFSET + i;
-                decoder.signal();
-                paletteBits   = dataBus.val;
+                addrBus->val = VRAM_BASE + PT_OFFSET + i;
+                signalHandler->signal();
+                paletteBits   = dataBus->val;
                 paletteBits >>= (2 * (i % 4));
                 paletteBits  &= 0x03;
                 paletteBits <<= 3;
@@ -119,21 +134,20 @@ void V1000::renderScanline(uint8_t data[4]) {
                     uint8_t  tileIndex  = 0;
                     uint32_t tilePixels = 0;
                     // get tile index
-                    // we render
-                    addrBus.val = a;
-                    decoder.signal();
-                    tileIndex = dataBus.val;
+                    addrBus->val = a;
+                    signalHandler->signal();
+                    tileIndex = dataBus->val;
                     // get pixels for tile
                     uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
-                    addrBus.val          = tileAddress;
-                    decoder.signal();
-                    ((uint8_t *) &tilePixels)[3] = dataBus.val;
-                    addrBus.val                  = tileAddress + 1;
-                    decoder.signal();
-                    ((uint8_t *) &tilePixels)[2] = dataBus.val;
-                    addrBus.val                  = tileAddress + 2;
-                    decoder.signal();
-                    ((uint8_t *) &tilePixels)[1] = dataBus.val;
+                    addrBus->val         = tileAddress;
+                    signalHandler->signal();
+                    ((uint8_t *) &tilePixels)[3] = dataBus->val;
+                    addrBus->val                 = tileAddress + 1;
+                    signalHandler->signal();
+                    ((uint8_t *) &tilePixels)[2] = dataBus->val;
+                    addrBus->val                 = tileAddress + 2;
+                    signalHandler->signal();
+                    ((uint8_t *) &tilePixels)[1] = dataBus->val;
                     for(int k = 0; k < 8; k++) {
                         uint8_t paletteColor = mem[BP_OFFSET];
                         uint8_t pixels       = tilePixels & 0x03;
@@ -153,21 +167,20 @@ void V1000::renderScanline(uint8_t data[4]) {
                 uint8_t  tileIndex  = 0;
                 uint32_t tilePixels = 0;
                 // get tile index
-                // we render
-                addrBus.val = a;
-                decoder.signal();
-                tileIndex = dataBus.val;
+                addrBus->val = a;
+                signalHandler->signal();
+                tileIndex = dataBus->val;
                 // get pixels for tile
                 uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
-                addrBus.val          = tileAddress;
-                decoder.signal();
-                ((uint8_t *) &tilePixels)[3] = dataBus.val;
-                addrBus.val                  = tileAddress + 1;
-                decoder.signal();
-                ((uint8_t *) &tilePixels)[2] = dataBus.val;
-                addrBus.val                  = tileAddress + 2;
-                decoder.signal();
-                ((uint8_t *) &tilePixels)[1] = dataBus.val;
+                addrBus->val         = tileAddress;
+                signalHandler->signal();
+                ((uint8_t *) &tilePixels)[3] = dataBus->val;
+                addrBus->val                 = tileAddress + 1;
+                signalHandler->signal();
+                ((uint8_t *) &tilePixels)[2] = dataBus->val;
+                addrBus->val                 = tileAddress + 2;
+                signalHandler->signal();
+                ((uint8_t *) &tilePixels)[1] = dataBus->val;
                 for(int k = 0; k < 8; k++) {
                     uint8_t paletteColor = mem[BP_OFFSET];
                     uint8_t pixels       = tilePixels & 0x03;
@@ -193,10 +206,13 @@ void V1000::renderScanline(uint8_t data[4]) {
             scanlineBuffer[bufferIndex + 3]             = 0xff;
         }
     }
+    irq->val = true;
     scheduler::scheduleEvent({deviceID, 0, scheduler::mainClock + 108});
+    return false;
 }
 
-void V1000::vBlank(uint8_t data[4]) {
-    nmi.val = true;
+bool V1000::vBlank(uint8_t data[4]) {
+    nmi->val = true;
     scheduler::scheduleEvent({deviceID, 1, 262 * 108 - 1});
+    return true;
 }

@@ -2,7 +2,9 @@
 
 #include "device.hpp"
 
+#include <cstdint>
+
 class signaledDevice : public device {
 public:
-    virtual void signal();
+    virtual uint32_t signal(); // return number of cycles taken
 };

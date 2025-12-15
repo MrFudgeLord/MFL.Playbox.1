@@ -11,16 +11,16 @@ class B1004 : public signaledDevice {
     B2100 &addrBus;
 public:
     signaledDevice *signalDevices[16];
-    void            signal() override;
+    uint32_t        signal() override;
     explicit B1004(B2100 &a)
         : addrBus(a) {};
 };
 
 template <uint8_t addrOffset>
-void B1004<addrOffset>::signal() {
+uint32_t B1004<addrOffset>::signal() {
     uint16_t maskedAddr = addrBus.val >> addrOffset;
     if constexpr(addrOffset < 12) {
         maskedAddr &= 0x0f;
     }
-    if(signalDevices[maskedAddr]) signalDevices[maskedAddr]->signal();
+    return signalDevices[maskedAddr] ? signalDevices[maskedAddr]->signal() : 1;
 }
