@@ -1,43 +1,43 @@
 #include "c1000.hpp"
 
 void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
-    rw.val      = false;
-    addrBus.val = addr;
-    decoder.signal();
-    dest = dataBus.val;
+    rw->val      = false;
+    addrBus->val = addr;
+    signalHandler->signal();
+    dest = dataBus->val;
     addCyclePreemptable();
 }
 
 void C1000::readMemoryWord(uint16_t addr, uint16_t &dest) {
-    rw.val      = false;
-    addrBus.val = addr + 1;
-    decoder.signal();
-    dest = dataBus.val;
+    rw->val      = false;
+    addrBus->val = addr + 1;
+    signalHandler->signal();
+    dest = dataBus->val;
     addCyclePreemptable();
-    rw.val      = false;
-    addrBus.val = addr;
-    decoder.signal();
-    dest = dataBus.val;
+    rw->val      = false;
+    addrBus->val = addr;
+    signalHandler->signal();
+    dest = dataBus->val;
 }
 
 void C1000::writeMemoryByte(uint16_t addr, uint8_t &src) {
-    rw.val      = true;
-    addrBus.val = addr;
-    dataBus.val = src;
-    decoder.signal();
+    rw->val      = true;
+    addrBus->val = addr;
+    dataBus->val = src;
+    signalHandler->signal();
     addCyclePreemptable();
 }
 
 void C1000::writeMemoryWord(uint16_t addr, uint16_t &src) {
-    rw.val      = true;
-    addrBus.val = addr;
-    dataBus.val = (uint8_t) src;
-    decoder.signal();
+    rw->val      = true;
+    addrBus->val = addr;
+    dataBus->val = (uint8_t) src;
+    signalHandler->signal();
     addCyclePreemptable();
-    rw.val      = true;
-    addrBus.val = addr + 1;
-    dataBus.val = src >> 8;
-    decoder.signal();
+    rw->val      = true;
+    addrBus->val = addr + 1;
+    dataBus->val = src >> 8;
+    signalHandler->signal();
     addCyclePreemptable();
 }
 
@@ -84,14 +84,14 @@ uint16_t C1000::popWord() {
 }
 
 void C1000::FDE() {
-    if(!rst.val) {
+    if(!rst->val) {
         reset();
     }
-    if(!nmi.val) {
+    if(!nmi->val) {
         nmiInterrupt();
     }
     if(f & IF) {
-        if(!irq.val) irqInterrupt();
+        if(!irq->val) irqInterrupt();
     }
     uint8_t opcode = fetchImmByte();
     (this->*opTable[opcode])();
@@ -115,21 +115,21 @@ void C1000::reset() {
     addCyclePreemptable();
     f = IF;
     addCyclePreemptable();
-    nmi.val = false;
-    irq.val = false;
-    rst.val = false;
+    nmi->val = false;
+    irq->val = false;
+    rst->val = false;
 }
 
 void C1000::nmiInterrupt() {
     pushWord(i.p);
     pushByte(f);
     readMemoryWord(0xFFFC, i.p);
-    nmi.val = false;
+    nmi->val = false;
 }
 
 void C1000::irqInterrupt() {
     pushWord(i.p);
     pushByte(f);
     readMemoryWord(0xFFFA, i.p);
-    irq.val = false;
+    irq->val = false;
 }

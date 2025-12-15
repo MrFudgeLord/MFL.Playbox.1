@@ -54,3 +54,11 @@ Rendering: Per scanline... 108 CPU cycles per scanline.
         Write to pixel framebuffer
         Pixel framebuffer doubled to create 2-pixel tall scanline
         Write pixel value >> 4 to the inactive scanline to simulate bleed
+
+Cartridges:
+    header:
+        Board (1 byte): Motherboard used by cartridge
+        Data that follows depends on board, but identifies the components on the board
+    data:
+        NVRAM Data: NVRAM data in order of component
+        ROM Data: ROM data in order of component

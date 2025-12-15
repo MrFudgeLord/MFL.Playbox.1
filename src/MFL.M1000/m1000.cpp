@@ -1,19 +1,26 @@
 #include "m1000.hpp"
 
-M1000::M1000() {
-    workRAMDecoder.signalDevices[0] = &workRAM1;
-    workRAM1.initialize();
-    workRAMDecoder.signalDevices[1] = &workRAM2;
-    workRAM2.initialize();
-    workRAMDecoder.signalDevices[2] = &workRAM3;
-    workRAM3.initialize();
-    workRAMDecoder.signalDevices[3] = &workRAM4;
-    workRAM4.initialize();
+M1000::M1000(B3000 *c, B3050 *v, B3100 *wr1, B3100 *wr2, B3100 *wr3, B3100 *wr4, B3100 *vr1, B3100 *vr2, B3100 *vr3) {
+    CPU = c;
+    c->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine, &rstLine);
 
-    memMapDecoder.signalDevices[0]   = &workRAMDecoder;
-    videoRAMDecoder.signalDevices[0] = &videoRAM1;
-    videoRAMDecoder.signalDevices[1] = &videoRAM2;
-    videoRAMDecoder.signalDevices[2] = &videoRAM3;
-    videoRAMDecoder.signalDevices[3] =
-      memMapDecoder.signalDevices[1] = &videoRAMDecoder;
+    VDP = v;
+    v->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine);
+
+    workRAM[0] = wr1;
+    workRAM[1] = wr2;
+    workRAM[2] = wr3;
+    workRAM[3] = wr4;
+
+    for(B3100 *wr : workRAM) {
+        if(wr) wr->initialize(&dataBus, &addrBus, &rwLine);
+    }
+
+    videoRAM[0] = vr1;
+    videoRAM[1] = vr2;
+    videoRAM[2] = vr3;
+
+    for(B3100 *vr : videoRAM) {
+        if(vr) vr->initialize(&dataBus, &addrBus, &rwLine);
+    }
 }

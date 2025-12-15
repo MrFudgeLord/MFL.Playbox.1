@@ -5,9 +5,9 @@
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B3100\b3100.hpp"
 
-class alignas(64) S1003 : public B3100, public signaledDevice {
+class alignas(64) S1002 : public B3100, public signaledDevice {
 public:
-    const static uint32_t MEM_SIZE = 1 << 10;
+    const static uint32_t MEM_SIZE = 1 << 9;
     uint8_t               memory[MEM_SIZE];
     void                  signal() override;
     bool                  initialize(B2000 *d, B2100 *a, B2310 *crw) override;

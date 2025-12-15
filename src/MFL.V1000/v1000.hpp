@@ -1,20 +1,12 @@
+#pragma once
+
 #include <cstdint>
 
-#include "..\processor.hpp"
 #include "..\scheduledDevice.hpp"
 #include "..\signaledDevice.hpp"
-#include "..\MFL.B2000\b2000.hpp"
-#include "..\MFL.B2100\b2100.hpp"
-#include "..\MFL.B2310\b2310.hpp"
+#include "..\MFL.B3050\b3050.hpp"
 
-class alignas(64) V1000 : public processor, public scheduledDevice, public signaledDevice {
-    signaledDevice &decoder;
-    B2000          &dataBus;
-    B2100          &addrBus;
-    B2310          &rw;
-    B2310          &nmi;
-    B2310          &irq;
-private:
+class alignas(64) V1000 : public B3050, public scheduledDevice, public signaledDevice {
     // VRAM memory map
     const static uint16_t VRAM_BASE = 0x1000;
     const static uint16_t TM_OFFSET = 0x0000;
@@ -102,9 +94,8 @@ public:
     uint8_t  x, y, ctrl;
     uint16_t a;
     uint8_t  mem[128];
-    V1000(signaledDevice &dc, B2000 &d, B2100 &a, B2310 &crw, B2310 &cnmi, B2310 &cirq);
-    bool initialize() override;
-    void dispatchEvent(uint8_t index, uint8_t data[4]) override;
+    bool     initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq) override;
+    void     dispatchEvent(uint8_t index, uint8_t data[4]) override;
 private:
     void renderScanline(uint8_t data[4]);
     void vBlank(uint8_t data[4]);

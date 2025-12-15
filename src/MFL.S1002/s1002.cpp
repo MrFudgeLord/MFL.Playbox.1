@@ -1,8 +1,8 @@
 #include <cstdlib>
 
-#include "s1003.hpp"
+#include "s1002.hpp"
 
-bool S1003::initialize(B2000 *d, B2100 *a, B2310 *crw) {
+bool S1002::initialize(B2000 *d, B2100 *a, B2310 *crw) {
     dataBus = d;
     addrBus = a;
     rw      = crw;
@@ -12,7 +12,7 @@ bool S1003::initialize(B2000 *d, B2100 *a, B2310 *crw) {
     return true;
 }
 
-void S1003::signal() {
+void S1002::signal() {
     if(rw->val) {
         memory[addrBus->val & (MEM_SIZE - 1)] = dataBus->val;
     } else {

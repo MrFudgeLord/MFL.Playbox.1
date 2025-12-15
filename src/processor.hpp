@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-class processor : public device {
+class processor {
 public:
     static uint32_t nextEventClock;
     uint32_t        clock;

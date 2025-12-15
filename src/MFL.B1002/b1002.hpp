@@ -22,5 +22,5 @@ void B1002<addrOffset>::signal() {
     if constexpr(addrOffset < 14) {
         maskedAddr &= 0x07;
     }
-    signalDevices[maskedAddr]->signal();
+    if(signalDevices[maskedAddr]) signalDevices[maskedAddr]->signal();
 }
