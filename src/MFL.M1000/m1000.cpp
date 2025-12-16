@@ -72,12 +72,14 @@ M1000::M1000(B3000 *c,
 
     puts("\n MB CART ASSIGN");
 
-    // if(cartridge) cartridge->initialize(&memMapDecoder,
-    //                                     &dataBus,
-    //                                     &addrBus,
-    //                                     &rwLine,
-    //                                     &nmiLine,
-    //                                     &irqLine);
+    printf("\n Cartridge pointer: %p\n", cartridge);
+
+    if(cartridge) cartridge->initialize(&memMapDecoder,
+                                        &dataBus,
+                                        &addrBus,
+                                        &rwLine,
+                                        &nmiLine,
+                                        &irqLine);
 
     puts("\n MB CART INIT");
 

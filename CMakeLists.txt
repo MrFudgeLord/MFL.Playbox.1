@@ -11,13 +11,13 @@ add_executable(Playbox src/main.cpp ${SOURCES})
 
 target_compile_options(Playbox PRIVATE
     -masm=intel
-    -march=znver5
+    -march=znver4
 )
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set_target_properties(Playbox PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+#set_target_properties(Playbox PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
 
 include_directories(include)
 link_directories(lib)

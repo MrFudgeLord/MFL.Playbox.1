@@ -2,28 +2,27 @@
 
 #include <cstdint>
 
-#include "..\device.hpp"
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B2100\b2100.hpp"
 
-// 5-bit address-to-signal decoder with variable bit offset, is also a signaledDevice to allow for chaining
+// 3-bit address-to-signal decoder with variable bit offset, is also a signaledDevice to allow for chaining
 
 template <uint8_t addrOffset>
-class B1005 : public signaledDevice {
+class B1003 : public signaledDevice {
 public:
     B2100 *addrBus;
 public:
-    signaledDevice *signalDevices[32];
+    signaledDevice *signalDevices[8];
     uint32_t        signal() override;
-    explicit B1005(B2100 *a)
+    B1003(B2100 *a)
         : addrBus(a) {};
 };
 
 template <uint8_t addrOffset>
-uint32_t B1005<addrOffset>::signal() {
+uint32_t B1003<addrOffset>::signal() {
     uint16_t maskedAddr = addrBus->val >> addrOffset;
-    if constexpr(addrOffset < 11) {
-        maskedAddr &= 0x1f;
+    if constexpr(addrOffset < 13) {
+        maskedAddr &= 0x07;
     }
     return signalDevices[maskedAddr] ? signalDevices[maskedAddr]->signal() : 1;
 }

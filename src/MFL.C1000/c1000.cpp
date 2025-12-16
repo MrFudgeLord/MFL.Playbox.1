@@ -19,7 +19,7 @@ void C1000::run() {
 }
 
 void C1000::addCyclePreemptable() {
-    printf("ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X\r", i.p, s.p, a, b, x, y, z);
+    printf("ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\r", i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
     std::cin.get();
 }
 
@@ -34,13 +34,18 @@ void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
 void C1000::readMemoryWord(uint16_t addr, uint16_t &dest) {
     rw->val      = false;
     addrBus->val = addr + 1;
+    printf("Reading high byte from %04X\n", addr + 1);
     signalHandler->signal();
     dest = dataBus->val;
+    printf("High byte: %02X\n", dataBus->val);
+    dest <<= 8;
     addCyclePreemptable();
     rw->val      = false;
     addrBus->val = addr;
+    printf("Reading low byte from %04X\n", addr);
     signalHandler->signal();
-    dest = dataBus->val;
+    printf("Low byte: %02X\n", dataBus->val);
+    dest |= dataBus->val;
 }
 
 void C1000::writeMemoryByte(uint16_t addr, uint8_t &src) {
@@ -123,7 +128,7 @@ void C1000::FDE() {
 }
 
 void C1000::reset() {
-    // readMemoryWord(0xFFFE, i.p);
+    readMemoryWord(0xFFFE, i.p);
     s.h = 0x01;
     addCyclePreemptable();
     s.l = 0xff;

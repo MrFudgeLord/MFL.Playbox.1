@@ -10,17 +10,18 @@
 
 template <uint8_t addrOffset>
 class B1002 : public signaledDevice {
-    B2100 &addrBus;
+public:
+    B2100 *addrBus;
 public:
     signaledDevice *signalDevices[4];
     uint32_t        signal() override;
-    B1002(B2100 &a)
+    B1002(B2100 *a)
         : addrBus(a) {};
 };
 
 template <uint8_t addrOffset>
 uint32_t B1002<addrOffset>::signal() {
-    uint16_t maskedAddr = addrBus.val >> addrOffset;
+    uint16_t maskedAddr = addrBus->val >> addrOffset;
     if constexpr(addrOffset < 14) {
         maskedAddr &= 0x07;
     }
