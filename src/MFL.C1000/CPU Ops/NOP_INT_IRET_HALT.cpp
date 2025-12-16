@@ -20,7 +20,7 @@ void C1000::IRET() {
 }
 
 void C1000::HALT() {
-    while(!(irq.val || nmi.val || rst.val)) {
+    while(!(irq->val || nmi->val || rst->val)) {
         addCyclePreemptable();
     }
 }

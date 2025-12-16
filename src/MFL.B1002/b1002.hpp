@@ -6,6 +6,8 @@
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B2100\b2100.hpp"
 
+// 2-bit address-to-signal decoder with variable bit offset, is also a signaledDevice to allow for chaining
+
 template <uint8_t addrOffset>
 class B1002 : public signaledDevice {
     B2100 &addrBus;

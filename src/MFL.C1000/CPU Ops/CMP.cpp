@@ -3,15 +3,16 @@
 void C1000::CMP_a_b() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(b), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(b), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -19,15 +20,16 @@ void C1000::CMP_a_iB() {
     uint8_t imm = fetchImmByte();
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -37,15 +39,16 @@ void C1000::CMP_a_zpxB() {
     readMemoryByte(addr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -55,15 +58,16 @@ void C1000::CMP_a_zpyB() {
     readMemoryByte(addr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -73,30 +77,32 @@ void C1000::CMP_a_zpzB() {
     readMemoryByte(addr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_b_a() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(a), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(a), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -104,15 +110,16 @@ void C1000::CMP_b_iB() {
     uint8_t imm = fetchImmByte();
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -124,15 +131,16 @@ void C1000::CMP_b_dxB() {
     readMemoryByte(effAddr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -144,15 +152,16 @@ void C1000::CMP_b_dyB() {
     readMemoryByte(effAddr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -164,105 +173,112 @@ void C1000::CMP_b_dzB() {
     readMemoryByte(effAddr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_x_a() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(x), [src] "+rm"(a), [flags] "+rm"(f)
+        : [dest] "+r"(x), [src] "+r"(a), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_y_a() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(y), [src] "+rm"(a), [flags] "+rm"(f)
+        : [dest] "+r"(y), [src] "+r"(a), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_z_a() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(z), [src] "+rm"(a), [flags] "+rm"(f)
+        : [dest] "+r"(z), [src] "+r"(a), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_x_b() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(x), [src] "+rm"(b), [flags] "+rm"(f)
+        : [dest] "+r"(x), [src] "+r"(b), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_y_b() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(y), [src] "+rm"(b), [flags] "+rm"(f)
+        : [dest] "+r"(y), [src] "+r"(b), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::CMP_z_b() {
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(z), [src] "+rm"(b), [flags] "+rm"(f)
+        : [dest] "+r"(z), [src] "+r"(b), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -272,15 +288,16 @@ void C1000::CMP_x_dB() {
     readMemoryByte(addr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(x), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(x), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -290,15 +307,16 @@ void C1000::CMP_y_dB() {
     readMemoryByte(addr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(y), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(y), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -308,15 +326,16 @@ void C1000::CMP_z_dB() {
     readMemoryByte(addr, val);
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(z), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(z), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -324,15 +343,16 @@ void C1000::CMP_x_iB() {
     uint8_t imm = fetchImmByte();
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(x), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(x), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -340,15 +360,16 @@ void C1000::CMP_y_iB() {
     uint8_t imm = fetchImmByte();
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(y), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(y), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -356,14 +377,15 @@ void C1000::CMP_z_iB() {
     uint8_t imm = fetchImmByte();
     asm("cmp             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(z), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(z), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }

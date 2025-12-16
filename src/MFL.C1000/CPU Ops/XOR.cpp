@@ -3,12 +3,13 @@
 void C1000::XOR_a_b() {
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(b), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(b), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -16,12 +17,13 @@ void C1000::XOR_a_iB() {
     uint8_t imm = fetchImmByte();
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(imm), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -31,12 +33,13 @@ void C1000::XOR_a_dB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -46,12 +49,13 @@ void C1000::XOR_a_zpdB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -61,12 +65,13 @@ void C1000::XOR_a_zpxB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -76,12 +81,13 @@ void C1000::XOR_a_zpyB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -91,12 +97,13 @@ void C1000::XOR_a_zpzB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -108,12 +115,13 @@ void C1000::XOR_a_izpxB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -125,12 +133,13 @@ void C1000::XOR_a_izpyB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -142,12 +151,13 @@ void C1000::XOR_a_izpzB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -159,12 +169,13 @@ void C1000::XOR_a_dxB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -176,12 +187,13 @@ void C1000::XOR_a_dyB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -193,24 +205,26 @@ void C1000::XOR_a_dzB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
 void C1000::XOR_b_a() {
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(b), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(b), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -218,12 +232,13 @@ void C1000::XOR_b_iB() {
     uint8_t imm = fetchImmByte();
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(imm), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -233,12 +248,13 @@ void C1000::XOR_b_dB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -248,12 +264,13 @@ void C1000::XOR_b_zpdB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -263,12 +280,13 @@ void C1000::XOR_b_zpxB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -278,12 +296,13 @@ void C1000::XOR_b_zpyB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -293,12 +312,13 @@ void C1000::XOR_b_zpzB() {
     readMemoryByte(addr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -310,12 +330,13 @@ void C1000::XOR_b_izpxB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -327,12 +348,13 @@ void C1000::XOR_b_izpyB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -344,12 +366,13 @@ void C1000::XOR_b_izpzB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -361,12 +384,13 @@ void C1000::XOR_b_dxB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -378,12 +402,13 @@ void C1000::XOR_b_dyB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "cc");
     addCyclePreemptable();
 }
 
@@ -395,11 +420,12 @@ void C1000::XOR_b_dzB() {
     readMemoryByte(effAddr, val);
     asm("xor             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00111111                            \n"
-        "and             ah, 0b11000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0x3f                         \n"
+        "and             ah, 0xc0                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "bl", "bl", "cc");
     addCyclePreemptable();
 }

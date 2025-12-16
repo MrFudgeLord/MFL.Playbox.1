@@ -4,6 +4,10 @@
 
 #include "..\MFL.B3100\b3100.hpp"
 
+// 1024x8 Random-Access Memory
+//
+// Memory is member
+
 class alignas(64) S1003 : public B3100 {
 public:
     const static uint32_t MEM_SIZE = 1 << 10;

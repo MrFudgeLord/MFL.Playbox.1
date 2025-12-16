@@ -1,6 +1,9 @@
 #include "..\c1000.hpp"
 
+#include <cstdio>
+
 void C1000::MOV_a_b() {
+    puts("Moved b to a");
     a = b;
     addCyclePreemptable();
 }

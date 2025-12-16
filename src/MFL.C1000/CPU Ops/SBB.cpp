@@ -2,38 +2,40 @@
 
 void C1000::SBB_a_b() {
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(a), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(a), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::SBB_a_iB() {
     uint8_t imm = fetchImmByte();
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -42,19 +44,20 @@ void C1000::SBB_a_dB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -63,19 +66,20 @@ void C1000::SBB_a_zpdB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -84,19 +88,20 @@ void C1000::SBB_a_zpxB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -105,19 +110,20 @@ void C1000::SBB_a_zpyB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -126,19 +132,20 @@ void C1000::SBB_a_zpzB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -149,19 +156,20 @@ void C1000::SBB_a_izpxB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -172,19 +180,20 @@ void C1000::SBB_a_izpyB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -195,19 +204,20 @@ void C1000::SBB_a_izpzB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -218,19 +228,20 @@ void C1000::SBB_a_dxB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -241,19 +252,20 @@ void C1000::SBB_a_dyB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -264,56 +276,59 @@ void C1000::SBB_a_dzB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(a), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(a), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::SBB_b_a() {
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(a), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(a), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
 void C1000::SBB_b_iB() {
     uint8_t imm = fetchImmByte();
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(imm), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(imm), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -322,19 +337,20 @@ void C1000::SBB_b_dB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -343,19 +359,20 @@ void C1000::SBB_b_zpdB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -364,19 +381,20 @@ void C1000::SBB_b_zpxB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -385,19 +403,20 @@ void C1000::SBB_b_zpyB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -406,19 +425,20 @@ void C1000::SBB_b_zpzB() {
     uint8_t  val;
     readMemoryByte(addr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -429,19 +449,20 @@ void C1000::SBB_b_izpxB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -452,19 +473,20 @@ void C1000::SBB_b_izpyB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -475,19 +497,20 @@ void C1000::SBB_b_izpzB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -498,19 +521,20 @@ void C1000::SBB_b_dxB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -521,19 +545,20 @@ void C1000::SBB_b_dyB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }
 
@@ -544,18 +569,19 @@ void C1000::SBB_b_dzB() {
     uint8_t val;
     readMemoryByte(effAddr, val);
     asm("mov             al, %[flags]                                    \n"
-        "and             al, 0b00000001                                  \n"
+        "and             al, 0x01                                        \n"
         "add             al, 0xff                                        \n"
         "sbb             %[dest], %[src]                                 \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b00011110                            \n"
-        "and             ah, 0b11000001                                  \n"
-        "or              %[flags], ah                                    \n"
+        "and             byte ptr %[flags], 0x1e                         \n"
+        "and             ah, 0xc1                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
         "seto            al                                              \n"
         "shl             al, 4                                           \n"
         "or              %[flags], al                                    \n"
-        : [dest] "+rm"(b), [src] "+rm"(val), [flags] "+rm"(f)
+        : [dest] "+r"(b), [src] "+r"(val), [flags] "+m"(f)
         :
-        : "ah", "al");
+        : "ah", "bl", "cc", "al");
     addCyclePreemptable();
 }

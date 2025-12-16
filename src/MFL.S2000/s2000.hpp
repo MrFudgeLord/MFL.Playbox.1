@@ -13,7 +13,7 @@ public:
     const static uint32_t MEM_SIZE = 1 << 12;
     uint8_t               memory[MEM_SIZE];
     void                  initMemory();
-    void                  signal() override;
+    uint32_t              signal() override;
     explicit S2000(B2000 &d, B2100 &a)
         : dataBus(d), addrBus(a) {};
 };

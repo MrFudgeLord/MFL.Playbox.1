@@ -3,23 +3,25 @@
 void C1000::NOT_a() {
     asm("not             %[dest]                                         \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b10111111                            \n"
-        "and             ah, 0b01000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(a), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0xbf                         \n"
+        "and             ah, 0x40                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(a), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "cc");
     addCyclePreemptable();
 }
 
 void C1000::NOT_b() {
     asm("not             %[dest]                                         \n"
         "lahf                                                            \n"
-        "and             %[flags], 0b10111111                            \n"
-        "and             ah, 0b01000000                                  \n"
-        "or              %[flags], ah                                    \n"
-        : [dest] "+rm"(b), [flags] "+rm"(f)
+        "and             byte ptr %[flags], 0xbf                         \n"
+        "and             ah, 0x40                                        \n"
+        "mov             bl, ah                                          \n"
+        "or              %[flags], bl                                    \n"
+        : [dest] "+r"(b), [flags] "+m"(f)
         :
-        : "ah");
+        : "ah", "bl", "cc");
     addCyclePreemptable();
 }

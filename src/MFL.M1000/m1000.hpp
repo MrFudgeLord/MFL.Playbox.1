@@ -29,16 +29,17 @@ public:
     B3800 *controller;
     B3900 *cartridge;
 public:
+    B2000 dataBus;
+    B2100 addrBus;
+    B2310 rwLine;
+    B2310 nmiLine;
+    B2310 irqLine;
+    B2310 rstLine;
+public:
     B1002<10> workRAMDecoder {addrBus};
     B1002<10> videoRAMDecoder {addrBus};
     B1004<12> memMapDecoder {addrBus};
     B1004<8>  hwRegDecoder {addrBus};
-    B2000     dataBus;
-    B2100     addrBus;
-    B2310     rwLine;
-    B2310     nmiLine;
-    B2310     irqLine;
-    B2310     rstLine;
 public:
     M1000(B3000 *c,
           B3050 *v,

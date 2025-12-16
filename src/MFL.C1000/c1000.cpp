@@ -1,4 +1,27 @@
 #include "c1000.hpp"
+#include <iostream>
+
+bool C1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst) {
+    signalHandler = sh;
+    dataBus       = d;
+    addrBus       = a;
+    rw            = crw;
+    nmi           = cnmi;
+    irq           = cirq;
+    rst           = crst;
+    return true;
+}
+
+void C1000::run() {
+    while(true) {
+        FDE();
+    }
+}
+
+void C1000::addCyclePreemptable() {
+    printf("ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X\r", i.p, s.p, a, b, x, y, z);
+    std::cin.get();
+}
 
 void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
     rw->val      = false;
@@ -44,6 +67,7 @@ void C1000::writeMemoryWord(uint16_t addr, uint16_t &src) {
 uint8_t C1000::fetchImmByte() {
     uint8_t val;
     readMemoryByte(i.p, val);
+    printf("Fetched immediate byte from %04X: %02X\n", i.p, val);
     i.p += 1;
     return val;
 }
@@ -93,12 +117,13 @@ void C1000::FDE() {
     if(f & IF) {
         if(!irq->val) irqInterrupt();
     }
+    puts("No interrupts\n");
     uint8_t opcode = fetchImmByte();
     (this->*opTable[opcode])();
 }
 
 void C1000::reset() {
-    readMemoryWord(0xFFFE, i.p);
+    // readMemoryWord(0xFFFE, i.p);
     s.h = 0x01;
     addCyclePreemptable();
     s.l = 0xff;
@@ -113,11 +138,12 @@ void C1000::reset() {
     addCyclePreemptable();
     z = 0;
     addCyclePreemptable();
-    f = IF;
+    f = 0;
     addCyclePreemptable();
-    nmi->val = false;
-    irq->val = false;
-    rst->val = false;
+    rw->val  = false;
+    nmi->val = true;
+    irq->val = true;
+    rst->val = true;
 }
 
 void C1000::nmiInterrupt() {
