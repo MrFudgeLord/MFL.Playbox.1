@@ -1,13 +1,13 @@
 #pragma once
 
-#include "device.hpp"
-
 #include <cstdint>
 
 class processor {
 public:
-    static inline uint32_t nextEventClock = 0;
-    uint32_t               clock;
-    virtual void           addCyclePreemptable() = 0;
-    virtual void           run()                 = 0;
+    // keeps track of every cycle ever run
+    uint64_t longClock = 0;
+    // set to mainClock after each event, meaning it resets every frame
+    uint32_t     eventClock            = 0;
+    virtual void addCyclePreemptable() = 0;
+    virtual void run()                 = 0;
 };

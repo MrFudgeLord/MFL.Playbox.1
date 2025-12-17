@@ -30,13 +30,13 @@ M1000::M1000(B3000 *c,
 
     puts("\n MB CPU ASSIGN");
 
-    c->initialize(&memMapDecoder,
-                  &dataBus,
-                  &addrBus,
-                  &rwLine,
-                  &nmiLine,
-                  &irqLine,
-                  &rstLine);
+    if(c) c->initialize(&memMapDecoder,
+                        &dataBus,
+                        &addrBus,
+                        &rwLine,
+                        &nmiLine,
+                        &irqLine,
+                        &rstLine);
 
     puts("\n MB CPU INIT");
 
@@ -44,7 +44,7 @@ M1000::M1000(B3000 *c,
 
     puts("\n MB VDP ASSIGN");
 
-    v->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine);
+    if(v) v->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine);
 
     puts("\n MB VDP INIT");
 
@@ -72,16 +72,16 @@ M1000::M1000(B3000 *c,
 
     puts("\n MB CART ASSIGN");
 
-    printf("\n Cartridge pointer: %p\n", cartridge);
+    if(cartridge) {
+        cartridge->initialize(&memMapDecoder,
+                              &dataBus,
+                              &addrBus,
+                              &rwLine,
+                              &nmiLine,
+                              &irqLine);
+    }
 
-    if(cartridge) cartridge->initialize(&memMapDecoder,
-                                        &dataBus,
-                                        &addrBus,
-                                        &rwLine,
-                                        &nmiLine,
-                                        &irqLine);
-
-    puts("\n MB CART INIT");
+    // puts("\n MB CART INIT");
 
     memMapDecoder.signalDevices[0x0] = &workRAMDecoder;
     memMapDecoder.signalDevices[0x1] = &videoRAMDecoder;
@@ -100,7 +100,7 @@ M1000::M1000(B3000 *c,
     memMapDecoder.signalDevices[0xe] = cartridge;
     memMapDecoder.signalDevices[0xf] = cartridge;
 
-    puts("\n MB MMD ASSIGN");
+    // puts("\n MB MMD ASSIGN");
 
     workRAMDecoder.signalDevices[0x0] = workRAM_1;
     workRAMDecoder.signalDevices[0x1] = workRAM_2;

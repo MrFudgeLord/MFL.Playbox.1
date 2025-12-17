@@ -3,7 +3,6 @@
 #include <cstdio>
 
 void C1000::MOV_a_b() {
-    puts("Moved b to a");
     a = b;
     addCyclePreemptable();
 }

@@ -14,14 +14,16 @@ namespace scheduler {
 // So VDP takes about 103.7 us per frame
 // On top of CPU, we're left with 16,534,691 ns for everything else
 
-uint32_t mainClock = 0;
+uint32_t mainClock      = 0;
+uint32_t nextEventClock = CLOCKS_PER_FRAME;
 
-std::priority_queue<event> eventQueue;
+std::priority_queue<event> frameEventQueue;
+std::priority_queue<event> futureEventQueue;
 
 uint8_t    processorCount = 0;
 processor *processors[16];
 
-uint8_t          deviceCount = 0;
+uint8_t          deviceCount = 1;
 scheduledDevice *devices[32];
 
 bool operator<(event lhs, event rhs) {
@@ -54,16 +56,22 @@ void scheduleEvent(event e) {
         e.timeSeq |= seq;
     }
 #endif
-    eventQueue.push(e);
+    if(e.timeSeq < CLOCKS_PER_FRAME) [[likely]] {
+        frameEventQueue.push(e);
+    } else {
+        futureEventQueue.push(e);
+    }
+    if(e.timeSeq < nextEventClock) {
+        nextEventClock = e.timeSeq;
+    }
 }
 
-bool tick() {
-    event nextEvent           = eventQueue.top();
-    processor::nextEventClock = nextEvent.timeSeq;
-    for(int i = 0; i < processorCount; i++) {
-        processors[i]->run();
-    }
+bool handleNextEvent() {
+    event nextEvent = frameEventQueue.top();
+    frameEventQueue.pop();
+    printf("\nEvent: {%i, %i, %i, 0x%08X}\n", nextEvent.deviceIndex, nextEvent.callbackIndex, nextEvent.timeSeq, *(uint32_t *) nextEvent.data);
     devices[nextEvent.deviceIndex]->dispatchEvent(nextEvent.callbackIndex, nextEvent.data);
+    nextEventClock = frameEventQueue.top().timeSeq;
     return true;
 }
 

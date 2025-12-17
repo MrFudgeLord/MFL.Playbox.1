@@ -1,5 +1,6 @@
 #include "c1000.hpp"
 #include <iostream>
+#include "..\scheduler\scheduler.hpp"
 
 bool C1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst) {
     signalHandler = sh;
@@ -19,7 +20,15 @@ void C1000::run() {
 }
 
 void C1000::addCyclePreemptable() {
-    printf("ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\r", i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
+    printf("cy: %lli | ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\n", longClock, i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
+    printf("ec: %i | lc: %lli | mc: %i | nec: %i\n", eventClock, longClock, scheduler::mainClock, scheduler::nextEventClock);
+    eventClock++;
+    longClock++;
+    if(eventClock == scheduler::nextEventClock) {
+        scheduler::mainClock += eventClock;
+        scheduler::handleNextEvent();
+        eventClock = scheduler::mainClock;
+    }
     std::cin.get();
 }
 
@@ -34,17 +43,13 @@ void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
 void C1000::readMemoryWord(uint16_t addr, uint16_t &dest) {
     rw->val      = false;
     addrBus->val = addr + 1;
-    printf("Reading high byte from %04X\n", addr + 1);
     signalHandler->signal();
-    dest = dataBus->val;
-    printf("High byte: %02X\n", dataBus->val);
+    dest   = dataBus->val;
     dest <<= 8;
     addCyclePreemptable();
     rw->val      = false;
     addrBus->val = addr;
-    printf("Reading low byte from %04X\n", addr);
     signalHandler->signal();
-    printf("Low byte: %02X\n", dataBus->val);
     dest |= dataBus->val;
 }
 
@@ -72,7 +77,6 @@ void C1000::writeMemoryWord(uint16_t addr, uint16_t &src) {
 uint8_t C1000::fetchImmByte() {
     uint8_t val;
     readMemoryByte(i.p, val);
-    printf("Fetched immediate byte from %04X: %02X\n", i.p, val);
     i.p += 1;
     return val;
 }
@@ -122,7 +126,6 @@ void C1000::FDE() {
     if(f & IF) {
         if(!irq->val) irqInterrupt();
     }
-    puts("No interrupts\n");
     uint8_t opcode = fetchImmByte();
     (this->*opTable[opcode])();
 }
@@ -163,4 +166,8 @@ void C1000::irqInterrupt() {
     pushByte(f);
     readMemoryWord(0xFFFA, i.p);
     irq->val = false;
+}
+
+void C1000::FAULT_ILLEGAL() {
+    return;
 }

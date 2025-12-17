@@ -1,4 +1,19 @@
 #include "dummy.hpp"
+#include "SDL3/SDL_timer.h"
+#include "scheduler.hpp"
+#include <SDL3/SDL.h>
+
+namespace scheduler {
+extern scheduledDevice *devices[32];
+}
+
+dummy::dummy(M1000 *mbptr) {
+    deviceID              = 0;
+    scheduler::devices[0] = this;
+    mb                    = mbptr;
+    scheduler::frameEventQueue.push({deviceID, 0, scheduler::CLOCKS_PER_FRAME});
+    lastFrameEndns = SDL_GetTicksNS();
+}
 
 bool dummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
     static void (dummy::*eventHandlers[8])(uint8_t[4]) = {
@@ -16,9 +31,28 @@ bool dummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
 }
 
 void dummy::frameEnd(uint8_t data[4]) {
+    using namespace scheduler;
+    frameEventQueue.push({deviceID, 0, CLOCKS_PER_FRAME});
+    puts("Pushed next frameEnd\n");
+    while(!futureEventQueue.empty()) {
+        event futureEvent    = futureEventQueue.top();
+        futureEvent.timeSeq -= CLOCKS_PER_FRAME;
+        if(futureEvent.timeSeq < CLOCKS_PER_FRAME) {
+            frameEventQueue.push(futureEvent);
+            futureEventQueue.pop();
+        } else {
+            break;
+        }
+    }
+    puts("Passed while loop\n");
+    nextEventClock = frameEventQueue.top().timeSeq;
+    puts("Set nextEventClock\n");
+    while((SDL_GetTicksNS() - lastFrameEndns) < 16'666'667);
+    lastFrameEndns = SDL_GetTicksNS();
     return;
 }
 
 void dummy::debugger(uint8_t data[4]) {
+    mb->nmiLine.val = false;
     return;
 }

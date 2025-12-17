@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <queue>
 #include <cassert>
 
@@ -11,7 +10,9 @@
 
 namespace scheduler {
 
-extern uint32_t mainClock;
+extern uint32_t    mainClock;
+extern uint32_t    nextEventClock;
+constexpr uint32_t CLOCKS_PER_FRAME = 28'296;
 
 struct event {
     uint32_t deviceIndex   : 5;
@@ -20,9 +21,12 @@ struct event {
     uint8_t  data[4];
 };
 
+extern std::priority_queue<event> frameEventQueue;
+extern std::priority_queue<event> futureEventQueue;
+
 bool operator<(event, event);
 void scheduleEvent(event e);
-bool tick();
+bool handleNextEvent();
 
 uint8_t registerProcessor(processor *p);
 

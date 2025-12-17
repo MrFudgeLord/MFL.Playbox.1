@@ -7,6 +7,9 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+#include "scheduler\scheduler.hpp"
+#include "scheduler\dummy.hpp"
+
 #include "MFL.C1000\c1000.hpp"
 #include "MFL.M1000\m1000.hpp"
 #include "MFL.M1100\m1100.hpp"

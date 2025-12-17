@@ -11,7 +11,7 @@ add_executable(Playbox src/main.cpp ${SOURCES})
 
 target_compile_options(Playbox PRIVATE
     -masm=intel
-    -march=znver4
+    -march=znver5
 )
 
 set(CMAKE_CXX_STANDARD 23)

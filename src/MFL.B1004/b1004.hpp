@@ -22,11 +22,11 @@ public:
 template <uint8_t addrOffset>
 uint32_t B1004<addrOffset>::signal() {
     uint16_t maskedAddr = addrBus->val >> addrOffset;
-    printf("B1004: Decoding address %04X with offset %d\n", addrBus->val, addrOffset);
+    // printf("B1004: Decoding address %04X with offset %d\n", addrBus->val, addrOffset);
     if constexpr(addrOffset < 12) {
         maskedAddr &= 0x0f;
     }
-    printf("B1004: Masked address %04X\n", maskedAddr);
-    printf("B1004: signalDevices[maskedAddr] = %p\n", signalDevices[maskedAddr]);
+    // printf("B1004: Masked address %04X\n", maskedAddr);
+    // printf("B1004: signalDevices[maskedAddr] = %p\n", signalDevices[maskedAddr]);
     return signalDevices[maskedAddr] ? signalDevices[maskedAddr]->signal() : 1;
 }
