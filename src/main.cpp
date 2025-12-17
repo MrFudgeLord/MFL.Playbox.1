@@ -1,28 +1,26 @@
 #include "main.hpp"
-#include "MFL.S2006/s2006.hpp"
-#include "SDL3/SDL_init.h"
-#include "scheduler/scheduler.hpp"
 #include <cstdio>
 
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
 
-    // if(argc < 2) {
-    //     SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "Not enough arguments!");
-    //     return 1;
-    // }
-    // std::string cartPath = argv[1];
+    atexit(SDL_Quit);
 
-    // std::fstream cartFileStream(cartPath);
-    // uint8_t      mbType;
-    // cartFileStream.read((char *) &mbType, 1);
-    S2006  chrROM_1;
-    S2006  prgROM_1;
-    S2006  prgROM_2;
-    S2006  prgROM_3;
-    S2006  prgROM_4;
-    S2006  prgROM_5;
-    B3900 *cartMB = new M1100 {&chrROM_1, &prgROM_1, &prgROM_2, &prgROM_3, &prgROM_4, &prgROM_5};
+    if(argc < 2) {
+        SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "Not enough arguments!");
+        exit(1);
+    }
+    std::string cartPath = argv[1];
+
+    std::fstream cartFileStream(cartPath);
+    uint8_t      mbType;
+    cartFileStream.read((char *) &mbType, 1);
+
+    B3900 *(*cartFuncs[256])(std::fstream &) = {
+        &cartM1100,
+    };
+
+    B3900 *cartMB = cartFuncs[mbType](cartFileStream);
 
     C1000 CPU;
     S1003 workRAM_1;
@@ -51,10 +49,10 @@ int main(int argc, char *argv[]) {
     dummy dummyDevice {&motherboard};
     scheduler::scheduleEvent({0, 1, 100});
 
-    prgROM_5.memory[8191]    = 0x01;
-    prgROM_5.memory[8190]    = 0x22;
-    workRAM_1.memory[0x0122] = 0x00;
-    workRAM_1.memory[0x0123] = 0x5c;
+    // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8191] = 0x01;
+    // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8190] = 0x22;
+    // workRAM_1.memory[0x0122]                             = 0x00;
+    // workRAM_1.memory[0x0123]                             = 0x5c;
     CPU.reset();
     CPU.b = 0x69;
     CPU.run();

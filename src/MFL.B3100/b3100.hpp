@@ -23,5 +23,11 @@ protected:
     B2100 *addrBus;
     B2310 *rw;
 public:
+    struct info {
+        uint8_t *memory;
+        uint32_t size;
+    };
+public:
     virtual bool initialize(B2000 *d, B2100 *a, B2310 *crw) = 0;
+    virtual info getInfo()                                  = 0;
 };

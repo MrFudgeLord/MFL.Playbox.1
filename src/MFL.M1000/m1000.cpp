@@ -30,23 +30,15 @@ M1000::M1000(B3000 *c,
 
     puts("\n MB CPU ASSIGN");
 
-    if(c) c->initialize(&memMapDecoder,
-                        &dataBus,
-                        &addrBus,
-                        &rwLine,
-                        &nmiLine,
-                        &irqLine,
-                        &rstLine);
+    if(CPU) c->initialize(&memMapDecoder,
+                          &dataBus,
+                          &addrBus,
+                          &rwLine,
+                          &nmiLine,
+                          &irqLine,
+                          &rstLine);
 
     puts("\n MB CPU INIT");
-
-    VDP = v;
-
-    puts("\n MB VDP ASSIGN");
-
-    if(v) v->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine);
-
-    puts("\n MB VDP INIT");
 
     videoRAM_1 = vr1;
     videoRAM_2 = vr2;
@@ -59,6 +51,14 @@ M1000::M1000(B3000 *c,
     if(videoRAM_3) videoRAM_3->initialize(&dataBus, &addrBus, &rwLine);
 
     puts("\n MB VRAM INIT");
+
+    VDP = v;
+
+    puts("\n MB VDP ASSIGN");
+
+    if(VDP) v->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine);
+
+    puts("\n MB VDP INIT");
 
     controller = ctrl;
 

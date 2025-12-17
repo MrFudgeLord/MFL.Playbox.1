@@ -36,10 +36,10 @@ public:
     B2310 irqLine;
     B2310 rstLine;
 public:
-    B1002<10> workRAMDecoder {&addrBus};
-    B1002<10> videoRAMDecoder {&addrBus};
-    B1004<12> memMapDecoder {&addrBus};
-    B1004<8>  hwRegDecoder {&addrBus};
+    B1002<10> workRAMDecoder;
+    B1002<10> videoRAMDecoder;
+    B1004<12> memMapDecoder;
+    B1004<8>  hwRegDecoder;
 public:
     M1000(B3000 *c,
           B3050 *v,

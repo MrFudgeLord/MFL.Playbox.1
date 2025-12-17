@@ -28,6 +28,9 @@ void C1000::addCyclePreemptable() {
         scheduler::mainClock += eventClock;
         scheduler::handleNextEvent();
         eventClock = scheduler::mainClock;
+        if(longClock > scheduler::CLOCKS_PER_FRAME * 4) {
+            exit(0);
+        }
     }
     std::cin.get();
 }

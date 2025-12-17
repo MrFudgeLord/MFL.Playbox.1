@@ -4,13 +4,13 @@
 
 #include "..\MFL.B3100\b3100.hpp"
 
-// 1024x8 Random-Access Memory
+// 4096x8 Read-only Memory
 //
 // Memory is member
 
-class alignas(64) S1003 : public B3100 {
+class alignas(64) S2005 : public B3100 {
 public:
-    const static uint32_t MEM_SIZE = 1 << 10;
+    const static uint32_t MEM_SIZE = 1 << 12;
     uint8_t               memory[MEM_SIZE];
     uint32_t              signal() override;
     bool                  initialize(B2000 *d, B2100 *a, B2310 *crw) override;

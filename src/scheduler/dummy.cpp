@@ -5,7 +5,8 @@
 
 namespace scheduler {
 extern scheduledDevice *devices[32];
-}
+extern processor       *processors[16];
+} // namespace scheduler
 
 dummy::dummy(M1000 *mbptr) {
     deviceID              = 0;
@@ -44,11 +45,15 @@ void dummy::frameEnd(uint8_t data[4]) {
             break;
         }
     }
+    mainClock = 0;
+    for(processor *p : processors) {
+        if(p) p->eventClock = 0;
+    }
     puts("Passed while loop\n");
     nextEventClock = frameEventQueue.top().timeSeq;
     puts("Set nextEventClock\n");
-    while((SDL_GetTicksNS() - lastFrameEndns) < 16'666'667);
-    lastFrameEndns = SDL_GetTicksNS();
+    // while((SDL_GetTicksNS() - lastFrameEndns) < 16'666'667);
+    // lastFrameEndns = SDL_GetTicksNS();
     return;
 }
 

@@ -10,4 +10,5 @@ public:
     uint8_t               memory[MEM_SIZE];
     uint32_t              signal() override;
     bool                  initialize(B2000 *d, B2100 *a, B2310 *crw) override;
+    info                  getInfo() override;
 };

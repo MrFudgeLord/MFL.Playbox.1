@@ -20,3 +20,7 @@ uint32_t S1002::signal() {
     }
     return 1;
 }
+
+B3100::info S1002::getInfo() {
+    return {memory, MEM_SIZE};
+}
