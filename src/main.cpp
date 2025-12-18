@@ -1,4 +1,7 @@
 #include "main.hpp"
+#include "SDL3/SDL_pixels.h"
+#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_surface.h"
 #include <cstdio>
 
 int main(int argc, char *argv[]) {
@@ -46,7 +49,12 @@ int main(int argc, char *argv[]) {
         &controller,
         cartMB};
 
-    dummy dummyDevice {&motherboard};
+    SDL_Window   *window   = SDL_CreateWindow("MFL Playbox 1", 768, 720, NULL);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+    SDL_Surface  *surface  = SDL_CreateSurface(768, 720, SDL_PIXELFORMAT_ABGR8888);
+    SDL_Texture  *texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, 768, 720);
+
+    dummy dummyDevice {&motherboard, {window, renderer, surface, texture}};
     scheduler::scheduleEvent({0, 1, 100});
 
     // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8191] = 0x01;

@@ -22,6 +22,9 @@ uint32_t B1005<addrOffset>::signal() {
     if constexpr(addrOffset < 11) {
         maskedAddr &= 0x1f;
     }
+    // printf("B1005: Decoding address %04X with offset %d on bus %p\n", addrBus->val, addrOffset, addrBus);
+    // printf("B1005: Masked address %04X\n", maskedAddr);
+    // printf("B1005: signalDevices[maskedAddr] = %p\n", signalDevices[maskedAddr]);
     return signalDevices[maskedAddr] ? signalDevices[maskedAddr]->signal() : 1;
 }
 

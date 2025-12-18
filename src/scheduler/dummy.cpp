@@ -4,14 +4,17 @@
 #include <SDL3/SDL.h>
 
 namespace scheduler {
-extern scheduledDevice *devices[32];
-extern processor       *processors[16];
+extern scheduledDevice  *devices[32];
+extern processor        *processors[16];
+extern displayProcessor *displayProcessorPtr;
 } // namespace scheduler
 
-dummy::dummy(M1000 *mbptr) {
-    deviceID              = 0;
-    scheduler::devices[0] = this;
-    mb                    = mbptr;
+dummy::dummy(M1000 *mbptr, SDLContext sdl) {
+    deviceID                                    = 0;
+    scheduler::devices[0]                       = this;
+    mb                                          = mbptr;
+    context                                     = sdl;
+    scheduler::displayProcessorPtr->frameBuffer = frameBuffer;
     scheduler::frameEventQueue.push({deviceID, 0, scheduler::CLOCKS_PER_FRAME});
     lastFrameEndns = SDL_GetTicksNS();
 }
@@ -52,6 +55,12 @@ void dummy::frameEnd(uint8_t data[4]) {
     puts("Passed while loop\n");
     nextEventClock = frameEventQueue.top().timeSeq;
     puts("Set nextEventClock\n");
+
+    SDL_UpdateTexture(context.texture, nullptr, frameBuffer, 768 * 4);
+    SDL_RenderClear(context.renderer);
+    SDL_RenderTexture(context.renderer, context.texture, nullptr, nullptr);
+    SDL_RenderPresent(context.renderer);
+
     // while((SDL_GetTicksNS() - lastFrameEndns) < 16'666'667);
     // lastFrameEndns = SDL_GetTicksNS();
     return;

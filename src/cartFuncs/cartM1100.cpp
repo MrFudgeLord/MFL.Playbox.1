@@ -62,34 +62,113 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
             chrROM = nullptr;
             break;
         default:
-            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 ROM type invalid");
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 chrROM type invalid");
             exit(3);
     }
-    for(B3100 **ptr : {&prgROM_1,
-                       &prgROM_2,
-                       &prgROM_3,
-                       &prgROM_4,
-                       &prgROM_5}) {
-        switch(types.prgROM_1) {
-            case 0x03:
-                *ptr = new S2003;
-                break;
-            case 0x04:
-                *ptr = new S2004;
-                break;
-            case 0x05:
-                *ptr = new S2005;
-                break;
-            case 0x06:
-                *ptr = new S2006;
-                break;
-            case 0xF0:
-                *ptr = nullptr;
-                break;
-            default:
-                SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 ROM type invalid");
-                exit(4);
-        }
+
+    switch(types.prgROM_1) {
+        case 0x03:
+            prgROM_1 = new S2003;
+            break;
+        case 0x04:
+            prgROM_1 = new S2004;
+            break;
+        case 0x05:
+            prgROM_1 = new S2005;
+            break;
+        case 0x06:
+            prgROM_1 = new S2006;
+            break;
+        case 0xF0:
+            prgROM_1 = nullptr;
+            break;
+        default:
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 prgROM_1 type invalid");
+            exit(4);
+    }
+
+    switch(types.prgROM_2) {
+        case 0x03:
+            prgROM_2 = new S2003;
+            break;
+        case 0x04:
+            prgROM_2 = new S2004;
+            break;
+        case 0x05:
+            prgROM_2 = new S2005;
+            break;
+        case 0x06:
+            prgROM_2 = new S2006;
+            break;
+        case 0xF0:
+            prgROM_2 = nullptr;
+            break;
+        default:
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 prgROM_2 type invalid");
+            exit(5);
+    }
+
+    switch(types.prgROM_3) {
+        case 0x03:
+            prgROM_3 = new S2003;
+            break;
+        case 0x04:
+            prgROM_3 = new S2004;
+            break;
+        case 0x05:
+            prgROM_3 = new S2005;
+            break;
+        case 0x06:
+            prgROM_3 = new S2006;
+            break;
+        case 0xF0:
+            prgROM_3 = nullptr;
+            break;
+        default:
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 prgROM_3 type invalid");
+            exit(6);
+    }
+
+    switch(types.prgROM_4) {
+        case 0x03:
+            prgROM_4 = new S2003;
+            break;
+        case 0x04:
+            prgROM_4 = new S2004;
+            break;
+        case 0x05:
+            prgROM_4 = new S2005;
+            break;
+        case 0x06:
+            prgROM_4 = new S2006;
+            break;
+        case 0xF0:
+            prgROM_4 = nullptr;
+            break;
+        default:
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 prgROM_4 type invalid");
+            exit(7);
+    }
+
+    switch(types.prgROM_5) {
+        case 0x03:
+            prgROM_5 = new S2003;
+            break;
+        case 0x04:
+            prgROM_5 = new S2004;
+            break;
+        case 0x05:
+            prgROM_5 = new S2005;
+            break;
+        case 0x06:
+            prgROM_5 = new S2006;
+            break;
+        case 0xF0:
+            prgROM_5 = nullptr;
+            break;
+        default:
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "M1100 prgROM_5 type invalid");
+            exit(8);
     }
 
     B3100 *lastUsableROM;
@@ -104,15 +183,26 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
             B3100::info memInfo = (*rom)->getInfo();
             cartFileStream.read((char *) memInfo.memory, memInfo.size);
         }
+        if(*rom) {
+            lastUsableROM = *rom;
+        }
     }
 
-    M1100  *cartMB = new M1100;
+    M1100 *cartMB    = new M1100;
+    cartMB->chrROM   = chrROM;
+    cartMB->prgROM_1 = prgROM_1;
+    cartMB->prgROM_2 = prgROM_2;
+    cartMB->prgROM_3 = prgROM_3;
+    cartMB->prgROM_4 = prgROM_4;
+    cartMB->prgROM_5 = prgROM_5;
+
     uint8_t signalLine;
 
     switch(leastMemGranularity) {
         case 10: // 1 KB, 6 bits to 64 signals
             cartMB->ROMDecoder = (B3980 *) new B1006<10>;
             signalLine         = 16;
+            printf("%p\n", lastUsableROM);
             for(B3100 **rom : {&chrROM,
                                &prgROM_1,
                                &prgROM_2,
@@ -126,7 +216,9 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
                     }
                 }
             }
-            while(signalLine < 63) {
+            while(signalLine < 64) {
+                ((B1006<10> *) cartMB->ROMDecoder)->signalDevices[signalLine] = lastUsableROM;
+                signalLine++;
             }
             break;
         case 11: // 2 KB, 5 bits to 32 signals
@@ -145,6 +237,10 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
                     }
                 }
             }
+            while(signalLine < 32) {
+                ((B1005<11> *) cartMB->ROMDecoder)->signalDevices[signalLine] = lastUsableROM;
+                signalLine++;
+            }
             break;
         case 12: // 4 KB, 4 bits to 16 signals
             cartMB->ROMDecoder = (B3980 *) new B1004<12>;
@@ -162,6 +258,10 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
                     }
                 }
             }
+            while(signalLine < 16) {
+                ((B1004<12> *) cartMB->ROMDecoder)->signalDevices[signalLine] = lastUsableROM;
+                signalLine++;
+            }
             break;
         case 13: // 8 KB, 3 bits to 8 signals
             cartMB->ROMDecoder = (B3980 *) new B1003<13>;
@@ -178,6 +278,10 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
                         signalLine++;
                     }
                 }
+            }
+            while(signalLine < 8) {
+                ((B1003<13> *) cartMB->ROMDecoder)->signalDevices[signalLine] = lastUsableROM;
+                signalLine++;
             }
             break;
         case 0xF7: // No memory

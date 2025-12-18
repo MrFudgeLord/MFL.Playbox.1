@@ -20,8 +20,6 @@ void C1000::run() {
 }
 
 void C1000::addCyclePreemptable() {
-    printf("cy: %lli | ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\n", longClock, i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
-    printf("ec: %i | lc: %lli | mc: %i | nec: %i\n", eventClock, longClock, scheduler::mainClock, scheduler::nextEventClock);
     eventClock++;
     longClock++;
     if(eventClock == scheduler::nextEventClock) {
@@ -33,6 +31,11 @@ void C1000::addCyclePreemptable() {
         }
     }
     std::cin.get();
+}
+
+void C1000::printState() {
+    printf("cy: %lli | ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\n", longClock, i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
+    printf("ec: %i | lc: %lli | mc: %i | nec: %i\n", eventClock, longClock, scheduler::mainClock, scheduler::nextEventClock);
 }
 
 void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {

@@ -12,6 +12,13 @@ M1000::M1000(B3000 *c,
              B3100 *vr3,
              B3800 *ctrl,
              B3900 *cart) {
+
+    printf("\n MB INIT START, addrbus at %p\n", &addrBus);
+    memMapDecoder.initialize(&addrBus);
+    workRAMDecoder.initialize(&addrBus);
+    videoRAMDecoder.initialize(&addrBus);
+    hwRegDecoder.initialize(&addrBus);
+
     workRAM_1 = wr1;
     workRAM_2 = wr2;
     workRAM_3 = wr3;

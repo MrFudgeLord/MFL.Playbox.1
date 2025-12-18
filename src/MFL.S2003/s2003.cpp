@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstdio>
 
 #include "s2003.hpp"
 
@@ -6,9 +7,6 @@ bool S2003::initialize(B2000 *d, B2100 *a, B2310 *crw) {
     dataBus = d;
     addrBus = a;
     rw      = crw;
-    for(int i = 0; i < MEM_SIZE / 4; i++) {
-        ((uint32_t *) memory)[i] = rand();
-    }
     return true;
 }
 

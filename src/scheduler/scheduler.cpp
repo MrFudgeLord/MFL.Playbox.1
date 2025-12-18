@@ -23,6 +23,8 @@ std::priority_queue<event> futureEventQueue;
 uint8_t    processorCount = 0;
 processor *processors[16];
 
+displayProcessor *displayProcessorPtr = nullptr;
+
 uint8_t          deviceCount = 1;
 scheduledDevice *devices[32];
 
@@ -37,6 +39,10 @@ uint8_t registerProcessor(processor *p) {
     assert(processorCount < 16);
     processors[processorCount] = p;
     return processorCount++;
+}
+
+void registerDisplayProcessor(displayProcessor *dp) {
+    displayProcessorPtr = dp;
 }
 
 uint8_t registerDevice(scheduledDevice *device) {

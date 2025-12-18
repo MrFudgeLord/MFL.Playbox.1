@@ -19,10 +19,10 @@ public:
 template <uint8_t addrOffset>
 uint32_t B1003<addrOffset>::signal() {
     uint16_t maskedAddr = addrBus->val >> addrOffset;
-    // printf("\nB1003: Decoding address %04X with offset %d\n", addrBus->val, addrOffset);
     if constexpr(addrOffset < 13) {
         maskedAddr &= 0x03;
     }
+    // printf("B1003: Decoding address %04X with offset %d on bus %p\n", addrBus->val, addrOffset, addrBus);
     // printf("B1003: Masked address %04X\n", maskedAddr);
     // printf("B1003: signalDevices[maskedAddr] = %p\n", signalDevices[maskedAddr]);
     return signalDevices[maskedAddr] ? signalDevices[maskedAddr]->signal() : 1;

@@ -2,11 +2,11 @@
 
 #include <cstdint>
 
-#include "..\scheduledDevice.hpp"
+#include "..\displayProcessor.hpp"
 #include "..\signaledDevice.hpp"
 #include "..\MFL.B3050\b3050.hpp"
 
-class alignas(64) V1000 : public B3050, public scheduledDevice {
+class alignas(64) V1000 : public B3050, public displayProcessor {
     // VRAM memory map
     const static uint16_t VRAM_BASE = 0x1000;
     const static uint16_t TM_OFFSET = 0x0000;
@@ -88,7 +88,7 @@ private:
         {0x29, 0x00, 0x33},
         {0x33, 0x00, 0x1f},
     };
-    uint8_t *scanlineBuffer; // uint8_t[768][4]
+    uint8_t *scanlineBuffer; // uint8_t[768][3]
     uint8_t  pixelPaletteColors[33][8] {};
 public:
     uint8_t  x, y, ctrl;

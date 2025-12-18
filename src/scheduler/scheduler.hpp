@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "..\processor.hpp"
+#include "..\displayProcessor.hpp"
 #include "..\scheduledDevice.hpp"
 
 // #define DET_SEQ
@@ -29,6 +30,8 @@ void scheduleEvent(event e);
 bool handleNextEvent();
 
 uint8_t registerProcessor(processor *p);
+
+void registerDisplayProcessor(displayProcessor *dp);
 
 uint8_t registerDevice(scheduledDevice *device);
 

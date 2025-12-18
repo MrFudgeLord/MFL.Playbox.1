@@ -13,6 +13,7 @@ class alignas(64) C1000 : public B3000, public processor {
 public:
     void addCyclePreemptable() override;
     void run() override;
+    void printState();
 public:
     uint8_t a, b, x, y, z, f;
     union {

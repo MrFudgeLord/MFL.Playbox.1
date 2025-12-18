@@ -4,9 +4,10 @@
 
 V1000::V1000() {
     deviceID = scheduler::registerDevice(this);
-    x        = 0;
-    y        = 0;
-    a        = VRAM_BASE + TM_OFFSET;
+    scheduler::registerDisplayProcessor(this);
+    x = 0;
+    y = 0;
+    a = VRAM_BASE + TM_OFFSET;
 };
 
 bool V1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq) {
@@ -44,9 +45,14 @@ bool V1000::dispatchEvent(uint8_t index, uint8_t data[4]) {
 }
 
 bool V1000::renderScanline(uint8_t data[4]) {
-    int8_t   lastTileIndex = (a & 0x3f) + 32;
-    uint8_t  paletteBits   = 0;
-    uint16_t ttBase        = (ctrl & 0b00000010) ? TT0_BASE : TT1_BASE;
+    const uint32_t PIXELS_PER_SCANLINE      = 256;
+    const uint32_t REAL_PIXELS_PER_SCANLINE = PIXELS_PER_SCANLINE * 3;
+    const uint32_t BYTES_PER_SCANLINE       = REAL_PIXELS_PER_SCANLINE * 4;
+    uint8_t        scanline                 = data[0];
+    scanlineBuffer                          = (frameBuffer + scanline * BYTES_PER_SCANLINE);
+    int8_t   lastTileIndex                  = (a & 0x3f) + 32;
+    uint8_t  paletteBits                    = 0;
+    uint16_t ttBase                         = (ctrl & 0b00000010) ? TT0_BASE : TT1_BASE;
     if(data[0] < 240) {
         if(lastTileIndex < 64) { // No wrapping
             for(int i = 0; i < 16; i++) {
