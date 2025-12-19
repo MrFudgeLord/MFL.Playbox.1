@@ -20,7 +20,7 @@ template <uint8_t addrOffset>
 uint32_t B1002<addrOffset>::signal() {
     uint16_t maskedAddr = addrBus->val >> addrOffset;
     if constexpr(addrOffset < 14) {
-        maskedAddr &= 0x07;
+        maskedAddr &= 0x03;
     }
     // printf("B1002: Decoding address %04X with offset %d on bus %p\n", addrBus->val, addrOffset, addrBus);
     // printf("B1002: Masked address %04X\n", maskedAddr);

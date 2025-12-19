@@ -12,8 +12,6 @@ M1000::M1000(B3000 *c,
              B3100 *vr3,
              B3800 *ctrl,
              B3900 *cart) {
-
-    printf("\n MB INIT START, addrbus at %p\n", &addrBus);
     memMapDecoder.initialize(&addrBus);
     workRAMDecoder.initialize(&addrBus);
     videoRAMDecoder.initialize(&addrBus);
@@ -24,8 +22,6 @@ M1000::M1000(B3000 *c,
     workRAM_3 = wr3;
     workRAM_4 = wr4;
 
-    puts("\n MB WRAM ASSIGN");
-
     if(workRAM_1) workRAM_1->initialize(&dataBus, &addrBus, &rwLine);
     if(workRAM_2) workRAM_2->initialize(&dataBus, &addrBus, &rwLine);
     if(workRAM_3) workRAM_3->initialize(&dataBus, &addrBus, &rwLine);
@@ -34,8 +30,6 @@ M1000::M1000(B3000 *c,
     puts("\n MB WRAM INIT");
 
     CPU = c;
-
-    puts("\n MB CPU ASSIGN");
 
     if(CPU) c->initialize(&memMapDecoder,
                           &dataBus,
@@ -48,10 +42,11 @@ M1000::M1000(B3000 *c,
     puts("\n MB CPU INIT");
 
     videoRAM_1 = vr1;
+    printf("\n %p", videoRAM_1);
     videoRAM_2 = vr2;
+    printf("\n %p", videoRAM_2);
     videoRAM_3 = vr3;
-
-    puts("\n MB VRAM ASSIGN");
+    printf("\n %p", videoRAM_3);
 
     if(videoRAM_1) videoRAM_1->initialize(&dataBus, &addrBus, &rwLine);
     if(videoRAM_2) videoRAM_2->initialize(&dataBus, &addrBus, &rwLine);
@@ -61,23 +56,17 @@ M1000::M1000(B3000 *c,
 
     VDP = v;
 
-    puts("\n MB VDP ASSIGN");
-
     if(VDP) v->initialize(&memMapDecoder, &dataBus, &addrBus, &rwLine, &nmiLine, &irqLine);
 
     puts("\n MB VDP INIT");
 
     controller = ctrl;
 
-    puts("\n MB CTRL ASSIGN");
-
     if(controller) controller->initialize(&dataBus, &addrBus, &rwLine);
 
     puts("\n MB CTRL INIT");
 
     cartridge = cart;
-
-    puts("\n MB CART ASSIGN");
 
     if(cartridge) {
         cartridge->initialize(&memMapDecoder,
@@ -88,7 +77,7 @@ M1000::M1000(B3000 *c,
                               &irqLine);
     }
 
-    // puts("\n MB CART INIT");
+    puts("\n MB CART INIT");
 
     memMapDecoder.signalDevices[0x0] = &workRAMDecoder;
     memMapDecoder.signalDevices[0x1] = &videoRAMDecoder;
@@ -107,19 +96,19 @@ M1000::M1000(B3000 *c,
     memMapDecoder.signalDevices[0xe] = cartridge;
     memMapDecoder.signalDevices[0xf] = cartridge;
 
-    // puts("\n MB MMD ASSIGN");
+    printf("\n MB MMD ASSIGN: %p", &memMapDecoder);
 
     workRAMDecoder.signalDevices[0x0] = workRAM_1;
     workRAMDecoder.signalDevices[0x1] = workRAM_2;
     workRAMDecoder.signalDevices[0x2] = workRAM_3;
     workRAMDecoder.signalDevices[0x3] = workRAM_4;
 
-    puts("\n MB WRD ASSIGN");
+    printf("\n MB WRD ASSIGN: %p", &workRAMDecoder);
 
     videoRAMDecoder.signalDevices[0x0] = videoRAM_1;
     videoRAMDecoder.signalDevices[0x1] = videoRAM_2;
     videoRAMDecoder.signalDevices[0x2] = videoRAM_3;
     videoRAMDecoder.signalDevices[0x3] = videoRAM_3;
 
-    puts("\n MB VRD ASSIGN");
+    printf("\n MB VRD ASSIGN: %p", &videoRAMDecoder);
 }

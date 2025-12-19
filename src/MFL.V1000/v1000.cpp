@@ -5,9 +5,14 @@
 V1000::V1000() {
     deviceID = scheduler::registerDevice(this);
     scheduler::registerDisplayProcessor(this);
-    x = 0;
-    y = 0;
-    a = VRAM_BASE + TM_OFFSET;
+    real.x  = 0;
+    real.y  = 0;
+    a       = VRAM_BASE + TM_OFFSET;
+    a      |= real.tileX;
+    a      |= (real.tileY << 6);
+    scheduler::event firstScanline {deviceID, 0, CYCLES_PER_SCANLINE - 1};
+    firstScanline.data[0] = 0;
+    scheduler::scheduleEvent(firstScanline);
 };
 
 bool V1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq) {
@@ -45,26 +50,26 @@ bool V1000::dispatchEvent(uint8_t index, uint8_t data[4]) {
 }
 
 bool V1000::renderScanline(uint8_t data[4]) {
-    const uint32_t PIXELS_PER_SCANLINE      = 256;
-    const uint32_t REAL_PIXELS_PER_SCANLINE = PIXELS_PER_SCANLINE * 3;
-    const uint32_t BYTES_PER_SCANLINE       = REAL_PIXELS_PER_SCANLINE * 4;
-    uint8_t        scanline                 = data[0];
-    scanlineBuffer                          = (frameBuffer + scanline * BYTES_PER_SCANLINE);
-    int8_t   lastTileIndex                  = (a & 0x3f) + 32;
-    uint8_t  paletteBits                    = 0;
-    uint16_t ttBase                         = (ctrl & 0b00000010) ? TT0_BASE : TT1_BASE;
+    uint8_t scanline         = data[0];
+    uint8_t scrolledScanline = scanline + real.y;
+    scanlineBuffer           = (frameBuffer + scrolledScanline * BYTES_PER_SCANLINE);
+    int8_t   lastTileIndex   = (a & 0x3f) + 32;
+    uint8_t  paletteBits     = 0;
+    uint16_t ttBase          = (real.ctrl & 0b00000010) ? TT0_BASE : TT1_BASE;
     if(data[0] < 240) {
         if(lastTileIndex < 64) { // No wrapping
             for(int i = 0; i < 16; i++) {
                 // get palette bits for the tile pair
                 rw->val      = false;
-                addrBus->val = VRAM_BASE + PT_OFFSET + i;
+                addrBus->val = VRAM_BASE + PT_OFFSET + real.y * 8 + i;
                 signalHandler->signal();
                 paletteBits   = dataBus->val;
                 paletteBits >>= (2 * (i % 4));
                 paletteBits  &= 0x03;
                 paletteBits <<= 3;
+                printf("\nFetch palette bits\n");
                 for(int j = 0; j < 2; j++) {
+                    printf("Render tile %i, a = 0x%X\n", i * 2 + j, a);
                     uint8_t  tileIndex  = 0;
                     uint32_t tilePixels = 0;
                     // get tile index
@@ -73,7 +78,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
                     signalHandler->signal();
                     tileIndex = dataBus->val;
                     // get pixels for tile
-                    uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
+                    uint16_t tileAddress = ttBase + tileIndex * 24 + real.y * 3;
                     addrBus->val         = tileAddress;
                     signalHandler->signal();
                     ((uint8_t *) &tilePixels)[3] = dataBus->val;
@@ -84,6 +89,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
                     signalHandler->signal();
                     ((uint8_t *) &tilePixels)[1] = dataBus->val;
                     for(int k = 0; k < 8; k++) {
+                        printf("Fetch pixel %i\n", k);
                         uint8_t paletteColor = mem[BP_OFFSET];
                         uint8_t pixels       = tilePixels & 0x03;
                         if(pixels != 0) {
@@ -98,6 +104,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
             }
             // 33rd tile rendered, which is either offscreen or partially scrolled into
             {
+                printf("Render 33rd tile\n");
                 uint8_t  tileIndex  = 0;
                 uint32_t tilePixels = 0;
                 // get tile index
@@ -105,7 +112,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
                 signalHandler->signal();
                 tileIndex = dataBus->val;
                 // get pixels for tile
-                uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
+                uint16_t tileAddress = ttBase + tileIndex * 24 + real.y * 3;
                 addrBus->val         = tileAddress;
                 signalHandler->signal();
                 ((uint8_t *) &tilePixels)[3] = dataBus->val;
@@ -144,7 +151,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
                     signalHandler->signal();
                     tileIndex = dataBus->val;
                     // get pixels for tile
-                    uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
+                    uint16_t tileAddress = ttBase + tileIndex * 24 + real.y * 3;
                     addrBus->val         = tileAddress;
                     signalHandler->signal();
                     ((uint8_t *) &tilePixels)[3] = dataBus->val;
@@ -177,7 +184,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
                 signalHandler->signal();
                 tileIndex = dataBus->val;
                 // get pixels for tile
-                uint16_t tileAddress = ttBase + tileIndex * 24 + y * 3;
+                uint16_t tileAddress = ttBase + tileIndex * 24 + real.y * 3;
                 addrBus->val         = tileAddress;
                 signalHandler->signal();
                 ((uint8_t *) &tilePixels)[3] = dataBus->val;
@@ -199,7 +206,7 @@ bool V1000::renderScanline(uint8_t data[4]) {
                 }
             }
         }
-        for(int i = x; i < (256 + x); i++) {
+        for(int i = real.x; i < (256 + real.x); i++) {
             uint8_t  paletteColor                       = **(pixelPaletteColors + i);
             uint16_t bufferIndex                        = i * 4;
             *(uint32_t *) &scanlineBuffer[bufferIndex]  = *(uint32_t *) &displayColors[paletteColor];
@@ -212,13 +219,25 @@ bool V1000::renderScanline(uint8_t data[4]) {
             scanlineBuffer[bufferIndex + 3]             = 0xff;
         }
     }
-    irq->val = true;
-    scheduler::scheduleEvent({deviceID, 0, scheduler::mainClock + 108});
+    // irq->val = false;
+    if(scanline < 239) {
+        scheduler::event nextScanline {deviceID, 0, (scanline + 2) * CYCLES_PER_SCANLINE - 1};
+        nextScanline.data[0] = scanline + 1;
+        scheduler::scheduleEvent(nextScanline);
+    }
     return false;
 }
 
 bool V1000::vBlank(uint8_t data[4]) {
-    nmi->val = true;
-    scheduler::scheduleEvent({deviceID, 1, 262 * 108 - 1});
+    nmi->val  = false;
+    a         = VRAM_BASE + TM_OFFSET;
+    a        |= real.tileX;
+    a        |= (real.tileY << 6);
+    scheduler::scheduleEvent({deviceID,
+                              1,
+                              (SCANLINES_PER_FRAME * CYCLES_PER_SCANLINE) - 1});
+    scheduler::scheduleEvent({deviceID,
+                              0,
+                              CYCLES_PER_SCANLINE - 1});
     return true;
 }

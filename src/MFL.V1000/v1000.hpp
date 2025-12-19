@@ -19,6 +19,13 @@ class alignas(64) V1000 : public B3050, public displayProcessor {
     const static uint8_t BP_OFFSET = 0x00;
     const static uint8_t SP_OFFSET = 0x10;
     const static uint8_t AS_OFFSET = 0x60;
+    // Display constants
+    const uint32_t PIXELS_PER_SCANLINE         = 256;
+    const uint32_t REAL_PIXELS_PER_SCANLINE    = PIXELS_PER_SCANLINE * 3;
+    const uint32_t BYTES_PER_SCANLINE          = REAL_PIXELS_PER_SCANLINE * 4;
+    const uint32_t VISIBLE_SCANLINES_PER_FRAME = 240;
+    const uint32_t SCANLINES_PER_FRAME         = 262;
+    const uint32_t CYCLES_PER_SCANLINE         = 108;
 private:
     struct {
         uint8_t r, g, b, a = 0xff;
@@ -91,7 +98,13 @@ private:
     uint8_t *scanlineBuffer; // uint8_t[768][3]
     uint8_t  pixelPaletteColors[33][8] {};
 public:
-    uint8_t  x, y, ctrl;
+    struct {
+        uint8_t x;
+        uint8_t y;
+        uint8_t tileX;
+        uint8_t tileY;
+        uint8_t ctrl;
+    } temp, real;
     uint16_t a;
     uint8_t  tempMem[128];
     uint8_t  mem[128];

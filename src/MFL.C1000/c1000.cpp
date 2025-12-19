@@ -1,5 +1,6 @@
 #include "c1000.hpp"
 #include <iostream>
+#include <thread>
 #include "..\scheduler\scheduler.hpp"
 
 bool C1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst) {
@@ -23,14 +24,15 @@ void C1000::addCyclePreemptable() {
     eventClock++;
     longClock++;
     if(eventClock == scheduler::nextEventClock) {
-        scheduler::mainClock += eventClock;
+        scheduler::mainClock = eventClock;
         scheduler::handleNextEvent();
         eventClock = scheduler::mainClock;
-        if(longClock > scheduler::CLOCKS_PER_FRAME * 4) {
+        if(longClock > scheduler::CLOCKS_PER_FRAME * 1) {
+            std::cin.get();
             exit(0);
         }
     }
-    std::cin.get();
+    printState();
 }
 
 void C1000::printState() {

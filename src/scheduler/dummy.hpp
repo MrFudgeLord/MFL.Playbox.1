@@ -22,5 +22,5 @@ private:
     void debugger(uint8_t data[4]);
 public:
     uint64_t lastFrameEndns;
-    uint8_t *frameBuffer = new uint8_t[720 * 768 * 4];
+    uint8_t *frameBuffer = new uint8_t[720 * 768 * 4] {};
 };

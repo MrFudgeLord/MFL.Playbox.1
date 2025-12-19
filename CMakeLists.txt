@@ -10,9 +10,9 @@ file(GLOB_RECURSE SOURCES
 add_executable(Playbox src/main.cpp ${SOURCES})
 
 target_compile_options(Playbox PRIVATE
-    -O3
     -masm=intel
-    -march=znver5
+    -march=alderlake
+    -Wno-c++17-extensions
 )
 
 set(CMAKE_CXX_STANDARD 23)

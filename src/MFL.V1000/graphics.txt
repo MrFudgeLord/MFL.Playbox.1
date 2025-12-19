@@ -14,15 +14,15 @@ Frame palettes: 4 background palettes of 8 colors each, 8 sprite palettes of 8 c
 
     Frame background palette 0, index 0 defines the backdrop color
 
-Palette table: 256-byte table; 2 bits per group of 2 tiles (in tilemap) sets which background palette it uses
+Palette table: 512-byte table; 2 bits per group of 2 tiles (in tilemap) sets which background palette it uses
 
 VRAM memory map (in the larger memory map):
 
 0000:0FFF   Work RAM
 1000:17FF   Tilemap
-1800:18FF   Palette table
-1900:19FF   Sprite table
-1A00:1FFF   ***
+1800:19FF   Palette table
+1A00:1AFF   Sprite table
+1B00:1FFF   ***
 2000:2FFF   Hardware registers
 3000:3FFF   Expansion port?
 4000:4FFF   Tile table 0

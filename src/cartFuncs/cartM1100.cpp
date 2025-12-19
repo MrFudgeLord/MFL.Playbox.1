@@ -202,7 +202,6 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
         case 10: // 1 KB, 6 bits to 64 signals
             cartMB->ROMDecoder = (B3980 *) new B1006<10>;
             signalLine         = 16;
-            printf("%p\n", lastUsableROM);
             for(B3100 **rom : {&chrROM,
                                &prgROM_1,
                                &prgROM_2,

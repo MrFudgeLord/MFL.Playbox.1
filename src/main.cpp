@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     S1003 workRAM_4;
     S1003 videoRAM_1;
     S1003 videoRAM_2;
-    S1002 videoRAM_3;
+    S1003 videoRAM_3;
     V1000 VDP;
     P1000 controller;
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     SDL_Texture  *texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, 768, 720);
 
     dummy dummyDevice {&motherboard, {window, renderer, surface, texture}};
-    scheduler::scheduleEvent({0, 1, 100});
+    // scheduler::scheduleEvent({0, 1, 100});
 
     // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8191] = 0x01;
     // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8190] = 0x22;
