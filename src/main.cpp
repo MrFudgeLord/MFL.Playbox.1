@@ -2,10 +2,15 @@
 #include "SDL3/SDL_pixels.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_surface.h"
+#include "SDL3/SDL_video.h"
 #include <cstdio>
 
+namespace scheduler {
+extern processor *processorPtr;
+}
+
 int main(int argc, char *argv[]) {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
     atexit(SDL_Quit);
 
@@ -49,21 +54,22 @@ int main(int argc, char *argv[]) {
         &controller,
         cartMB};
 
-    SDL_Window   *window   = SDL_CreateWindow("MFL Playbox 1", 768, 720, NULL);
+    SDL_Window   *window   = SDL_CreateWindow("MFL Playbox 1", 768, 720, SDL_WINDOW_BORDERLESS);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
-    SDL_Surface  *surface  = SDL_CreateSurface(768, 720, SDL_PIXELFORMAT_ABGR8888);
-    SDL_Texture  *texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, 768, 720);
+    SDL_Surface  *surface  = SDL_CreateSurface(768, 720, SDL_PIXELFORMAT_RGBA32);
+    SDL_Texture  *texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, 768, 720);
 
     dummy dummyDevice {&motherboard, {window, renderer, surface, texture}};
     // scheduler::scheduleEvent({0, 1, 100});
 
     // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8191] = 0x01;
-    // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8190] = 0x22;
-    // workRAM_1.memory[0x0122]                             = 0x00;
-    // workRAM_1.memory[0x0123]                             = 0x5c;
-    CPU.reset();
-    CPU.b = 0x69;
-    CPU.run();
+    //((M1100 *) cartMB)->prgROM_5->getInfo().memory[8190] = 0x22;
+    // videoRAM_1.memory[0x0000]                            = 0x01;
+    // videoRAM_3.memory[0x0000]                            = 0x00;
+    // VDP.real.mem[0x00]                                   = 0x12;
+    // VDP.real.mem[0x01]                                   = 18;
+
+    scheduler::processorPtr->run();
 
     return 0;
 }

@@ -8,6 +8,41 @@ Tile table: Structure containing tile definitions
 
     Tile definitions: array of 3 bit palette indices per pixel. One row is 3 bytes (8 pixels * 3 bits = 24 bits)
 
+Sprite table: Structure of 4-byte sprite entries; 128 sprites in a 512-byte table with 8 sprites per scanline max
+
+    Byte 0: Sprite Y
+    Byte 1: Sprite X
+    Byte 2: Tile index
+    Byte 3: Attributes
+        00 0000 00
+        || |    ++---Palette select
+        || +---------Background priority
+        |+-----------Flip vertically
+        +------------Flip horizontally
+
+y = 203
+
+200
+201
+202
+203 S
+204 S
+205 S
+206 S
+207 S
+208 S
+209 S
+210 S
+211
+212
+213
+214
+215
+216
+217
+218
+
+
 Color palette: Whole palette is 6-bit (00 is transparent)
 
 Frame palettes: 4 background palettes of 8 colors each, 8 sprite palettes of 8 colors each

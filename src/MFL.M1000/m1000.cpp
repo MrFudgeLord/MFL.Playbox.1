@@ -62,7 +62,7 @@ M1000::M1000(B3000 *c,
 
     controller = ctrl;
 
-    if(controller) controller->initialize(&dataBus, &addrBus, &rwLine);
+    if(controller) controller->initialize(&dataBus, &addrBus);
 
     puts("\n MB CTRL INIT");
 
@@ -82,7 +82,7 @@ M1000::M1000(B3000 *c,
     memMapDecoder.signalDevices[0x0] = &workRAMDecoder;
     memMapDecoder.signalDevices[0x1] = &videoRAMDecoder;
     memMapDecoder.signalDevices[0x2] = &hwRegDecoder;
-    memMapDecoder.signalDevices[0x3] = NULL;
+    memMapDecoder.signalDevices[0x3] = nullptr;
     memMapDecoder.signalDevices[0x4] = cartridge;
     memMapDecoder.signalDevices[0x5] = cartridge;
     memMapDecoder.signalDevices[0x6] = cartridge;
@@ -111,4 +111,21 @@ M1000::M1000(B3000 *c,
     videoRAMDecoder.signalDevices[0x3] = videoRAM_3;
 
     printf("\n MB VRD ASSIGN: %p", &videoRAMDecoder);
+
+    hwRegDecoder.signalDevices[0x0] = VDP;
+    hwRegDecoder.signalDevices[0x1] = nullptr;
+    hwRegDecoder.signalDevices[0x2] = controller;
+    hwRegDecoder.signalDevices[0x3] = nullptr;
+    hwRegDecoder.signalDevices[0x4] = nullptr;
+    hwRegDecoder.signalDevices[0x5] = nullptr;
+    hwRegDecoder.signalDevices[0x6] = nullptr;
+    hwRegDecoder.signalDevices[0x7] = nullptr;
+    hwRegDecoder.signalDevices[0x8] = nullptr;
+    hwRegDecoder.signalDevices[0x9] = nullptr;
+    hwRegDecoder.signalDevices[0xa] = nullptr;
+    hwRegDecoder.signalDevices[0xb] = nullptr;
+    hwRegDecoder.signalDevices[0xc] = nullptr;
+    hwRegDecoder.signalDevices[0xd] = nullptr;
+    hwRegDecoder.signalDevices[0xe] = nullptr;
+    hwRegDecoder.signalDevices[0xf] = nullptr;
 }

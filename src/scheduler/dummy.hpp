@@ -16,11 +16,11 @@ class dummy : public scheduledDevice {
     SDLContext context;
 public:
     dummy(M1000 *mbptr, SDLContext sdl);
-    bool dispatchEvent(uint8_t index, uint8_t data[4]) override;
+    uint32_t dispatchEvent(uint8_t index, uint8_t data[4]) override;
 private:
     void frameEnd(uint8_t data[4]);
     void debugger(uint8_t data[4]);
 public:
-    uint64_t lastFrameEndns;
-    uint8_t *frameBuffer = new uint8_t[720 * 768 * 4] {};
+    uint64_t  lastFrameEndns;
+    uint32_t *frameBuffer = new uint32_t[768 * 720] {};
 };

@@ -11,14 +11,14 @@ class alignas(64) V1000 : public B3050, public displayProcessor {
     const static uint16_t VRAM_BASE = 0x1000;
     const static uint16_t TM_OFFSET = 0x0000;
     const static uint16_t PT_OFFSET = 0x0800;
-    const static uint16_t ST_OFFSET = 0x0A00;
     // Cartridge memory map
     const static uint16_t TT0_BASE = 0x4000;
     const static uint16_t TT1_BASE = 0x5000;
     // Internal memory map
     const static uint8_t BP_OFFSET = 0x00;
-    const static uint8_t SP_OFFSET = 0x10;
-    const static uint8_t AS_OFFSET = 0x60;
+    const static uint8_t SP_OFFSET = 0x20;
+    const static uint8_t AS_OFFSET = 0x40;
+    const static uint8_t ST_OFFSET = 0x60;
     // Display constants
     const uint32_t PIXELS_PER_SCANLINE         = 256;
     const uint32_t REAL_PIXELS_PER_SCANLINE    = PIXELS_PER_SCANLINE * 3;
@@ -28,7 +28,7 @@ class alignas(64) V1000 : public B3050, public displayProcessor {
     const uint32_t CYCLES_PER_SCANLINE         = 108;
 private:
     struct {
-        uint8_t r, g, b, a = 0xff;
+        uint8_t r, g, b;
     } displayColors[64] = {
         {0xff, 0xff, 0xff},
         {0xff, 0xb3, 0xb3},
@@ -95,25 +95,23 @@ private:
         {0x29, 0x00, 0x33},
         {0x33, 0x00, 0x1f},
     };
-    uint8_t *scanlineBuffer; // uint8_t[768][3]
-    uint8_t  pixelPaletteColors[33][8] {};
+    uint32_t *scanlineBuffer;
+    uint8_t   pixelPaletteIndexes[33 * 8] {};
 public:
     struct {
-        uint8_t x;
-        uint8_t y;
-        uint8_t tileX;
-        uint8_t tileY;
+        struct {
+            uint8_t x;
+            uint8_t y;
+        } pixel, tile;
         uint8_t ctrl;
-    } temp, real;
-    uint16_t a;
-    uint8_t  tempMem[128];
-    uint8_t  mem[128];
+        uint8_t mem[64 + 32 + 256];
+    } real, temp;
     V1000();
     bool     initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq) override;
     uint32_t signal() override;
-    bool     dispatchEvent(uint8_t index, uint8_t data[4]) override;
+    uint32_t dispatchEvent(uint8_t index, uint8_t data[4]) override;
 private:
-    bool renderScanline(uint8_t data[4]);
-    bool vBlank(uint8_t data[4]);
-    bool hBlank(uint8_t data[4]);
+    uint32_t renderScanline(uint8_t data[4]);
+    uint32_t vBlank(uint8_t data[4]);
+    uint32_t hBlank(uint8_t data[4]);
 };

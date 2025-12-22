@@ -5,5 +5,5 @@
 
 class displayProcessor : public scheduledDevice {
 public:
-    uint8_t *frameBuffer;
+    uint32_t *frameBuffer;
 };

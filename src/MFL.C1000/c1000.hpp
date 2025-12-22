@@ -31,6 +31,7 @@ public:
         SF = 0b10000000
     };
     bool initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst) override;
+    C1000();
 public:
     void     readMemoryByte(uint16_t addr, uint8_t &dest);
     void     readMemoryWord(uint16_t addr, uint16_t &dest);

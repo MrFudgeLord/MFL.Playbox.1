@@ -3,6 +3,10 @@
 #include <thread>
 #include "..\scheduler\scheduler.hpp"
 
+C1000::C1000() {
+    scheduler::registerProcessor(this);
+}
+
 bool C1000::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst) {
     signalHandler = sh;
     dataBus       = d;
@@ -27,12 +31,13 @@ void C1000::addCyclePreemptable() {
         scheduler::mainClock = eventClock;
         scheduler::handleNextEvent();
         eventClock = scheduler::mainClock;
-        if(longClock > scheduler::CLOCKS_PER_FRAME * 1) {
-            std::cin.get();
-            exit(0);
-        }
+        // std::cin.get();
     }
-    printState();
+    if(false && longClock == scheduler::CLOCKS_PER_FRAME * 60) {
+        std::cin.get();
+        exit(0);
+    }
+    // printState();
 }
 
 void C1000::printState() {

@@ -5,6 +5,7 @@
 
 #include "..\processor.hpp"
 #include "..\displayProcessor.hpp"
+#include "..\inputDevice.hpp"
 #include "..\scheduledDevice.hpp"
 
 // #define DET_SEQ
@@ -29,9 +30,11 @@ bool operator<(event, event);
 void scheduleEvent(event e);
 bool handleNextEvent();
 
-uint8_t registerProcessor(processor *p);
+void registerProcessor(processor *p);
 
 void registerDisplayProcessor(displayProcessor *dp);
+
+void registerInputDevice(inputDevice *id);
 
 uint8_t registerDevice(scheduledDevice *device);
 
