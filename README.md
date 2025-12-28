@@ -11,4 +11,4 @@ The MFL.Playbox.1 is a fantasy console, with the following specs:
 
 This project includes a CMakeLists.txt file, so you can build it with CMake. This program requires the SDL3 DLL/shared library.
 
-You can simply run the executable by providing it a path to a cartridge file as the only argument. There isn't yet a tool to create cartridge files, but they're pretty simple: a byte defining the type of board, several bytes defining the components on that board, and the ROM/NVRAM contents.
+You can simply run the executable by providing it a path to a cartridge file as the only argument. There isn't yet a tool to create cartridge files, but they're pretty simple: a byte for the version, a byte defining the type of board, several bytes defining the components on that board, and the ROM/NVRAM contents.
