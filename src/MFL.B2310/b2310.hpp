@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\device.hpp"
+#include "../device.hpp"
 
 // 1-bit system bus
 

@@ -1,4 +1,4 @@
-#include "..\c1000.hpp"
+#include "../c1000.hpp"
 
 void C1000::PUSHF() {
     f &= 0b11110001;

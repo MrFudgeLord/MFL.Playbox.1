@@ -1,4 +1,4 @@
-#include "..\c1000.hpp"
+#include "../c1000.hpp"
 
 void C1000::SSPH_iB() {
     uint8_t imm = fetchImmByte();

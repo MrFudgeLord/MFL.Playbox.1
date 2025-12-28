@@ -1,9 +1,4 @@
 #include "main.hpp"
-#include "SDL3/SDL_pixels.h"
-#include "SDL3/SDL_render.h"
-#include "SDL3/SDL_surface.h"
-#include "SDL3/SDL_video.h"
-#include <cstdio>
 
 namespace scheduler {
 extern processor *processorPtr;
@@ -21,7 +16,9 @@ int main(int argc, char *argv[]) {
     std::string cartPath = argv[1];
 
     std::fstream cartFileStream(cartPath);
+    uint8_t      version;
     uint8_t      mbType;
+    cartFileStream.read((char *) &version, 1);
     cartFileStream.read((char *) &mbType, 1);
 
     B3900 *(*cartFuncs[256])(std::fstream &) = {
@@ -35,9 +32,9 @@ int main(int argc, char *argv[]) {
     S1003 workRAM_2;
     S1003 workRAM_3;
     S1003 workRAM_4;
-    S1003 videoRAM_1;
-    S1003 videoRAM_2;
-    S1003 videoRAM_3;
+    S1103 videoRAM_1;
+    S1103 videoRAM_2;
+    S1102 videoRAM_3;
     V1000 VDP;
     P1000 controller;
 
@@ -59,7 +56,7 @@ int main(int argc, char *argv[]) {
     SDL_Surface  *surface  = SDL_CreateSurface(768, 720, SDL_PIXELFORMAT_RGBA32);
     SDL_Texture  *texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, 768, 720);
 
-    dummy dummyDevice {&motherboard, {window, renderer, surface, texture}};
+    dummy dummyDevice {{window, renderer, surface, texture}};
     // scheduler::scheduleEvent({0, 1, 100});
 
     // ((M1100 *) cartMB)->prgROM_5->getInfo().memory[8191] = 0x01;
@@ -68,7 +65,6 @@ int main(int argc, char *argv[]) {
     // videoRAM_3.memory[0x0000]                            = 0x00;
     // VDP.real.mem[0x00]                                   = 0x12;
     // VDP.real.mem[0x01]                                   = 18;
-
     scheduler::processorPtr->run();
 
     return 0;

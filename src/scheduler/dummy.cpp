@@ -6,23 +6,23 @@
 #include <iostream>
 
 namespace scheduler {
-extern scheduledDevice  *devices[32];
+extern scheduledDevice  *devices[256];
 extern processor        *processorPtr;
 extern displayProcessor *displayProcessorPtr;
 extern inputDevice      *inputDevicePtr;
 } // namespace scheduler
 
-dummy::dummy(M1000 *mbptr, SDLContext sdl) {
+dummy::dummy(SDLContext sdl) {
     deviceID                                    = 0;
     scheduler::devices[0]                       = this;
-    mb                                          = mbptr;
     context                                     = sdl;
     scheduler::displayProcessorPtr->frameBuffer = frameBuffer;
-    scheduler::frameEventQueue.push({deviceID, 0, scheduler::CLOCKS_PER_FRAME});
+    scheduler::scheduleEvent({scheduler::TICKS_PER_FRAME, deviceID, 0});
+    // scheduler::scheduleEvent({1, deviceID, 1});
     lastFrameEndns = SDL_GetTicksNS();
 }
 
-uint32_t dummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
+uint64_t dummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
     static void (dummy::*eventHandlers[8])(uint8_t[4]) = {
         &dummy::frameEnd,
         &dummy::debugger,
@@ -39,32 +39,23 @@ uint32_t dummy::dispatchEvent(uint8_t index, uint8_t data[4]) {
 
 void dummy::frameEnd(uint8_t data[4]) {
     using namespace scheduler;
-    frameEventQueue.push({deviceID, 0, CLOCKS_PER_FRAME});
-    while(!futureEventQueue.empty()) {
-        event futureEvent    = futureEventQueue.top();
-        futureEvent.timeSeq -= CLOCKS_PER_FRAME;
-        if(futureEvent.timeSeq < CLOCKS_PER_FRAME) {
-            frameEventQueue.push(futureEvent);
-            futureEventQueue.pop();
-        } else {
-            break;
-        }
-    }
-    mainClock                = 0;
-    processorPtr->eventClock = 0;
-    nextEventClock           = frameEventQueue.top().timeSeq;
+    eventQueue.push({scheduler::mainClock + scheduler::TICKS_PER_FRAME, deviceID, 0});
 
     SDL_UpdateTexture(context.texture, nullptr, frameBuffer, 768 * 4);
     SDL_RenderClear(context.renderer);
     SDL_RenderTexture(context.renderer, context.texture, nullptr, nullptr);
     SDL_RenderPresent(context.renderer);
 
-    inputDevicePtr->resetInput();
+    // inputDevicePtr->resetInput();
+
+    static uint32_t numFrames           = 0;
+    static uint64_t nsLeftPerFrameTotal = 0;
 
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
             case SDL_EVENT_QUIT:
+                SDL_Log("Average ns left per frame: %lli", nsLeftPerFrameTotal / numFrames);
                 exit(0);
                 break;
             case SDL_EVENT_KEY_DOWN: {
@@ -79,11 +70,14 @@ void dummy::frameEnd(uint8_t data[4]) {
         }
     }
 
-    SDL_Log("ns left in frame: %llu\n", lastFrameEndns + 16'666'667 - SDL_GetTicksNS());
-    if(lastFrameEndns + 16'666'667 - SDL_GetTicksNS() > 16'666'667) {
-        std::cin.get();
-        exit(0x10);
-    }
+    nsLeftPerFrameTotal += lastFrameEndns + 16'666'667 - SDL_GetTicksNS();
+    numFrames++;
+
+    // SDL_Log("ns left in frame: %llu\n", lastFrameEndns + 16'666'667 - SDL_GetTicksNS());
+    //  if(lastFrameEndns + 16'666'667 - SDL_GetTicksNS() > 16'666'667) {
+    //      std::cin.get();
+    //      exit(0x10);
+    //  }
 
     while((SDL_GetTicksNS() - lastFrameEndns) < 16'666'667);
     lastFrameEndns = SDL_GetTicksNS();
@@ -91,6 +85,6 @@ void dummy::frameEnd(uint8_t data[4]) {
 }
 
 void dummy::debugger(uint8_t data[4]) {
-    mb->nmiLine.val = false;
+    scheduler::scheduleEvent({scheduler::mainClock + 1, deviceID, 1});
     return;
 }

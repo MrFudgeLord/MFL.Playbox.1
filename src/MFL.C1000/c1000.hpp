@@ -2,18 +2,15 @@
 
 #include <cstdint>
 
-#include "..\processor.hpp"
-#include "..\signaledDevice.hpp"
-#include "..\MFL.B2000\b2000.hpp"
-#include "..\MFL.B2100\b2100.hpp"
-#include "..\MFL.B2310\b2310.hpp"
-#include "..\MFL.B3000\b3000.hpp"
+#include "../processor.hpp"
+#include "../signaledDevice.hpp"
+#include "../MFL.B2000/b2000.hpp"
+#include "../MFL.B2100/b2100.hpp"
+#include "../MFL.B2310/b2310.hpp"
+#include "../MFL.B3000/b3000.hpp"
 
 class alignas(64) C1000 : public B3000, public processor {
 public:
-    void addCyclePreemptable() override;
-    void run() override;
-    void printState();
 public:
     uint8_t a, b, x, y, z, f;
     union {
@@ -31,6 +28,9 @@ public:
         SF = 0b10000000
     };
     bool initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310 *cnmi, B2310 *cirq, B2310 *crst) override;
+    void run() override;
+    void addCyclePreemptable() override;
+    void printState();
     C1000();
 public:
     void     readMemoryByte(uint16_t addr, uint8_t &dest);
@@ -44,9 +44,10 @@ public:
     uint8_t  popByte();
     uint16_t popWord();
     void     FDE();
+    void     clockedSignal();
     void     reset();
-    void     nmiInterrupt();
-    void     irqInterrupt();
+    void     nmiHandler();
+    void     irqHandler();
 private:
     void FAULT_ILLEGAL();
     void FAULT_BUS();

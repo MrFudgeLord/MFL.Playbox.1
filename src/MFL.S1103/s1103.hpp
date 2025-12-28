@@ -2,17 +2,17 @@
 
 #include <cstdint>
 
-#include "../MFL.B3100/b3100.hpp"
+#include "../MFL.B3110/b3110.hpp"
 
-// 1024x8 Random-Access Memory
+// 1024x8 Lockable Random-Access Memory
 //
 // Memory is member
 
-class alignas(64) S1003 : public B3100 {
+class alignas(64) S1103 : public B3110 {
 public:
     const static uint32_t MEM_SIZE = 1 << 10;
     uint8_t               memory[MEM_SIZE];
     uint64_t              signal() override;
-    bool                  initialize(B2000 *d, B2100 *a, B2310 *crw) override;
+    bool                  initialize(B2000 *d, B2100 *a, B2310 *crw, B2310 *cl) override;
     info                  getInfo() override;
 };

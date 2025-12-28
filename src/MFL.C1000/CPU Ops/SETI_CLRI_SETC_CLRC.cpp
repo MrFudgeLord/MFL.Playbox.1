@@ -1,21 +1,21 @@
-#include "..\c1000.hpp"
+#include "../c1000.hpp"
 
 void C1000::SETI() {
-    f |= IF;
+    f |= flags::IF;
     addCyclePreemptable();
 }
 
 void C1000::CLRI() {
-    f &= ~IF;
+    f &= ~flags::IF;
     addCyclePreemptable();
 }
 
 void C1000::SETC() {
-    f |= CF;
+    f |= flags::CF;
     addCyclePreemptable();
 }
 
 void C1000::CLRC() {
-    f &= ~CF;
+    f &= ~flags::CF;
     addCyclePreemptable();
 }

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "..\device.hpp"
+#include "../device.hpp"
 
 // 8-bit system bus
 

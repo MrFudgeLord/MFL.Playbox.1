@@ -1,4 +1,4 @@
-#include "..\c1000.hpp"
+#include "../c1000.hpp"
 
 void C1000::RET() {
     i.p = popWord();
@@ -15,7 +15,7 @@ void C1000::JMP_id() {
 
 void C1000::JZ_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), f & ZF) {
+    if(addCyclePreemptable(), f & flags::ZF) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -23,7 +23,7 @@ void C1000::JZ_iB() {
 
 void C1000::JNZ_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), !(f & ZF)) {
+    if(addCyclePreemptable(), !(f & flags::ZF)) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -31,7 +31,7 @@ void C1000::JNZ_iB() {
 
 void C1000::JC_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), f & CF) {
+    if(addCyclePreemptable(), f & flags::CF) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -39,7 +39,7 @@ void C1000::JC_iB() {
 
 void C1000::JNC_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), !(f & CF)) {
+    if(addCyclePreemptable(), !(f & flags::CF)) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -47,7 +47,7 @@ void C1000::JNC_iB() {
 
 void C1000::JO_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), f & OF) {
+    if(addCyclePreemptable(), f & flags::OF) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -55,7 +55,7 @@ void C1000::JO_iB() {
 
 void C1000::JNO_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), !(f & OF)) {
+    if(addCyclePreemptable(), !(f & flags::OF)) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -63,7 +63,7 @@ void C1000::JNO_iB() {
 
 void C1000::JS_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), f & SF) {
+    if(addCyclePreemptable(), f & flags::SF) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }
@@ -71,7 +71,7 @@ void C1000::JS_iB() {
 
 void C1000::JNS_iB() {
     uint8_t imm = fetchImmByte();
-    if(addCyclePreemptable(), !(f & SF)) {
+    if(addCyclePreemptable(), !(f & flags::SF)) {
         i.p += (int16_t) imm;
         addCyclePreemptable();
     }

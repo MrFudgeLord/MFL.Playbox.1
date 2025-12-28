@@ -1,10 +1,10 @@
 #pragma once
 
-#include "..\device.hpp"
-#include "..\signaledDevice.hpp"
-#include "..\MFL.B2000\b2000.hpp"
-#include "..\MFL.B2100\b2100.hpp"
-#include "..\MFL.B2310\b2310.hpp"
+#include "../device.hpp"
+#include "../signaledDevice.hpp"
+#include "../MFL.B2000/b2000.hpp"
+#include "../MFL.B2100/b2100.hpp"
+#include "../MFL.B2310/b2310.hpp"
 
 // CPU socket conforming to the following characteristics:
 //

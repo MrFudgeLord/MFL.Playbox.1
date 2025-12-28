@@ -21,6 +21,6 @@ bool M1100::initialize(signaledDevice *sh, B2000 *d, B2100 *a, B2310 *crw, B2310
     return true;
 }
 
-uint32_t M1100::signal() {
+uint64_t M1100::signal() {
     return ROMDecoder->signal();
 }

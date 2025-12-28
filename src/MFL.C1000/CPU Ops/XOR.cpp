@@ -1,4 +1,4 @@
-#include "..\c1000.hpp"
+#include "../c1000.hpp"
 
 void C1000::XOR_a_b() {
     asm("xor             %[dest], %[src]                                 \n"

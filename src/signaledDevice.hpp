@@ -6,5 +6,5 @@
 
 class signaledDevice : public device {
 public:
-    virtual uint32_t signal() = 0; // return number of cycles taken
+    virtual uint64_t signal() = 0; // return number of cycles taken
 };

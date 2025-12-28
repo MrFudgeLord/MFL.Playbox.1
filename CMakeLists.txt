@@ -11,8 +11,7 @@ add_executable(Playbox src/main.cpp ${SOURCES})
 
 target_compile_options(Playbox PRIVATE
     -masm=intel
-    -march=znver5
-    -Wno-c++17-extensions
+    -std=c++26
 )
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
@@ -20,8 +19,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 set(CMAKE_BUILD_TYPE "RELEASE")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-#set_target_properties(Playbox PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
 
 include_directories(include)
 link_directories(lib)

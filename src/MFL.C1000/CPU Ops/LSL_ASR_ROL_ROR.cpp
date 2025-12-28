@@ -1,4 +1,4 @@
-#include "..\c1000.hpp"
+#include "../c1000.hpp"
 
 void C1000::LSL_a() {
     asm("shl             %[dest], 1                                      \n"

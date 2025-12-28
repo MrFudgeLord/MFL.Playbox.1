@@ -1,9 +1,7 @@
 #include "c1000.hpp"
-#include <iostream>
-#include <thread>
-#include "..\scheduler\scheduler.hpp"
+#include "../scheduler/scheduler.hpp"
 
-C1000::C1000() {
+C1000::C1000() : processor(600) {
     scheduler::registerProcessor(this);
 }
 
@@ -25,30 +23,26 @@ void C1000::run() {
 }
 
 void C1000::addCyclePreemptable() {
-    eventClock++;
-    longClock++;
-    if(eventClock == scheduler::nextEventClock) {
-        scheduler::mainClock = eventClock;
+    clock += ticksPerCycle;
+    cycleClock++;
+    if(clock >= scheduler::nextEventClock) {
+        scheduler::mainClock = clock;
         scheduler::handleNextEvent();
-        eventClock = scheduler::mainClock;
+        clock = scheduler::mainClock;
         // std::cin.get();
-    }
-    if(false && longClock == scheduler::CLOCKS_PER_FRAME * 60) {
-        std::cin.get();
-        exit(0);
     }
     // printState();
 }
 
 void C1000::printState() {
-    printf("cy: %lli | ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\n", longClock, i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
-    printf("ec: %i | lc: %lli | mc: %i | nec: %i\n", eventClock, longClock, scheduler::mainClock, scheduler::nextEventClock);
+    printf("cy: %lli | ip: 0x%04X | sp: 0x%04x | a: 0x%02X, b: 0x%02X, x: 0x%02X, y: 0x%02X, z: 0x%02X | data bus: %02X | addr bus: %04X\n", cycleClock, i.p, s.p, a, b, x, y, z, dataBus->val, addrBus->val);
+    printf("c: %lli | mc: %lli | nec: %lli\n", clock, scheduler::mainClock, scheduler::nextEventClock);
 }
 
 void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
     rw->val      = false;
     addrBus->val = addr;
-    signalHandler->signal();
+    clockedSignal();
     dest = dataBus->val;
     addCyclePreemptable();
 }
@@ -56,13 +50,13 @@ void C1000::readMemoryByte(uint16_t addr, uint8_t &dest) {
 void C1000::readMemoryWord(uint16_t addr, uint16_t &dest) {
     rw->val      = false;
     addrBus->val = addr + 1;
-    signalHandler->signal();
+    clockedSignal();
     dest   = dataBus->val;
     dest <<= 8;
     addCyclePreemptable();
     rw->val      = false;
     addrBus->val = addr;
-    signalHandler->signal();
+    clockedSignal();
     dest |= dataBus->val;
 }
 
@@ -70,7 +64,7 @@ void C1000::writeMemoryByte(uint16_t addr, uint8_t &src) {
     rw->val      = true;
     addrBus->val = addr;
     dataBus->val = src;
-    signalHandler->signal();
+    clockedSignal();
     addCyclePreemptable();
 }
 
@@ -78,12 +72,12 @@ void C1000::writeMemoryWord(uint16_t addr, uint16_t &src) {
     rw->val      = true;
     addrBus->val = addr;
     dataBus->val = (uint8_t) src;
-    signalHandler->signal();
+    clockedSignal();
     addCyclePreemptable();
     rw->val      = true;
     addrBus->val = addr + 1;
     dataBus->val = src >> 8;
-    signalHandler->signal();
+    clockedSignal();
     addCyclePreemptable();
 }
 
@@ -130,17 +124,25 @@ uint16_t C1000::popWord() {
 }
 
 void C1000::FDE() {
-    if(!rst->val) {
+    if(rst->val) {
         reset();
     }
-    if(!nmi->val) {
-        nmiInterrupt();
+    if(nmi->val) {
+        nmiHandler();
     }
     if(f & IF) {
-        if(!irq->val) irqInterrupt();
+        if(irq->val) irqHandler();
     }
     uint8_t opcode = fetchImmByte();
     (this->*opTable[opcode])();
+}
+
+void C1000::clockedSignal() {
+    uint64_t cyclesTaken = ceilingDiv(signalHandler->signal(), ticksPerCycle);
+    assert(cyclesTaken != 0);
+    for(int i = 0; i < cyclesTaken; i++) {
+        addCyclePreemptable();
+    }
 }
 
 void C1000::reset() {
@@ -162,19 +164,19 @@ void C1000::reset() {
     f = 0;
     addCyclePreemptable();
     rw->val  = false;
-    nmi->val = true;
-    irq->val = true;
-    rst->val = true;
+    nmi->val = false;
+    irq->val = false;
+    rst->val = false;
 }
 
-void C1000::nmiInterrupt() {
+void C1000::nmiHandler() {
     pushWord(i.p);
     pushByte(f);
     readMemoryWord(0xFFFC, i.p);
     nmi->val = false;
 }
 
-void C1000::irqInterrupt() {
+void C1000::irqHandler() {
     pushWord(i.p);
     pushByte(f);
     readMemoryWord(0xFFFA, i.p);

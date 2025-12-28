@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "..\MFL.B3100\b3100.hpp"
+#include "../MFL.B3100/b3100.hpp"
 
 // 2048x8 Read-only Memory
 //
@@ -12,7 +12,7 @@ class alignas(64) S2004 : public B3100 {
 public:
     const static uint32_t MEM_SIZE = 1 << 11;
     uint8_t               memory[MEM_SIZE];
-    uint32_t              signal() override;
+    uint64_t              signal() override;
     bool                  initialize(B2000 *d, B2100 *a, B2310 *crw) override;
     info                  getInfo() override;
 };

@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include "..\signaledDevice.hpp"
-#include "..\MFL.B2100\b2100.hpp"
-#include "..\MFL.B3980\b3980.hpp"
+#include "../signaledDevice.hpp"
+#include "../MFL.B2100/b2100.hpp"
+#include "../MFL.B3980/b3980.hpp"
 
 // 3-bit address-to-signal decoder with variable bit offset, is also a signaledDevice to allow for chaining
 
@@ -12,12 +12,12 @@ template <uint8_t addrOffset>
 class B1003 : public B3980 {
 public:
     signaledDevice *signalDevices[8];
-    uint32_t        signal() override;
+    uint64_t        signal() override;
     bool            initialize(B2100 *a) override;
 };
 
 template <uint8_t addrOffset>
-uint32_t B1003<addrOffset>::signal() {
+uint64_t B1003<addrOffset>::signal() {
     uint16_t maskedAddr = addrBus->val >> addrOffset;
     if constexpr(addrOffset < 13) {
         maskedAddr &= 0x03;

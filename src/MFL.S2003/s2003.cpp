@@ -10,9 +10,9 @@ bool S2003::initialize(B2000 *d, B2100 *a, B2310 *crw) {
     return true;
 }
 
-uint32_t S2003::signal() {
+uint64_t S2003::signal() {
     dataBus->val = memory[addrBus->val & (MEM_SIZE - 1)];
-    return 1;
+    return 2 * 2 * 2 * 3 * 5; // 120
 }
 
 B3100::info S2003::getInfo() {

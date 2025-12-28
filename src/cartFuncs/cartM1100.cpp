@@ -1,15 +1,15 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_log.h"
 #include "cartFuncs.hpp"
-#include "..\MFL.M1100\m1100.hpp"
-#include "..\MFL.B1003\b1003.hpp"
-#include "..\MFL.B1004\b1004.hpp"
-#include "..\MFL.B1005\b1005.hpp"
-#include "..\MFL.B1006\b1006.hpp"
-#include "..\MFL.S2003\s2003.hpp"
-#include "..\MFL.S2004\s2004.hpp"
-#include "..\MFL.S2005\s2005.hpp"
-#include "..\MFL.S2006\s2006.hpp"
+#include "../MFL.M1100/m1100.hpp"
+#include "../MFL.B1003/b1003.hpp"
+#include "../MFL.B1004/b1004.hpp"
+#include "../MFL.B1005/b1005.hpp"
+#include "../MFL.B1006/b1006.hpp"
+#include "../MFL.S2003/s2003.hpp"
+#include "../MFL.S2004/s2004.hpp"
+#include "../MFL.S2005/s2005.hpp"
+#include "../MFL.S2006/s2006.hpp"
 #include <algorithm>
 #include <sal.h>
 
@@ -22,7 +22,6 @@ B3900 *cartM1100(std::fstream &cartFileStream) {
         uint8_t prgROM_4;
         uint8_t prgROM_5;
     } types;
-    cartFileStream.seekg(1, std::ios::beg);
     cartFileStream.read((char *) &types, sizeof(types));
 
     B3100 *chrROM;

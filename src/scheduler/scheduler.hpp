@@ -3,28 +3,29 @@
 #include <queue>
 #include <cassert>
 
-#include "..\processor.hpp"
-#include "..\displayProcessor.hpp"
-#include "..\inputDevice.hpp"
-#include "..\scheduledDevice.hpp"
+#include "../processor.hpp"
+#include "../displayProcessor.hpp"
+#include "../inputDevice.hpp"
+#include "../scheduledDevice.hpp"
 
 // #define DET_SEQ
 
 namespace scheduler {
 
-extern uint32_t    mainClock;
-extern uint32_t    nextEventClock;
-constexpr uint32_t CLOCKS_PER_FRAME = 28'296;
+extern uint64_t    mainClock;
+extern uint64_t    nextEventClock;
+constexpr uint64_t TICKS_PER_FRAME  = 16'977'600;
+constexpr uint64_t TICKS_PER_SECOND = 1'018'656'000; // basically our base clock speed in a way? it's close to but not exactly 1 GHz: 2^6*3^4*5^2*131*60
 
 struct event {
-    uint32_t deviceIndex   : 5;
-    uint32_t callbackIndex : 3;
-    uint32_t timeSeq       : 24;
+    uint64_t timeSeq;
+    uint8_t  deviceIndex;
+    uint8_t  callbackIndex;
     uint8_t  data[4];
+    uint8_t  reserved[2];
 };
 
-extern std::priority_queue<event> frameEventQueue;
-extern std::priority_queue<event> futureEventQueue;
+extern std::priority_queue<event> eventQueue;
 
 bool operator<(event, event);
 void scheduleEvent(event e);
