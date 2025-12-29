@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(MFL.Playbox.1 CXX)
+project(Playbox.1 CXX)
 
 file(GLOB_RECURSE SOURCES
     src/*/*.cpp

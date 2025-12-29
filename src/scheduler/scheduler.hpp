@@ -3,10 +3,10 @@
 #include <queue>
 #include <cassert>
 
-#include "../processor.hpp"
-#include "../displayProcessor.hpp"
-#include "../inputDevice.hpp"
-#include "../scheduledDevice.hpp"
+#include "../basicDeviceClasses/processor.hpp"
+#include "../basicDeviceClasses/displayProcessor.hpp"
+#include "../basicDeviceClasses/inputDevice.hpp"
+#include "../basicDeviceClasses/scheduledDevice.hpp"
 
 // #define DET_SEQ
 

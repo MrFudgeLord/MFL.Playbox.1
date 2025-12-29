@@ -1,7 +1,7 @@
 #pragma once
 
 #include <fstream>
-#include "../MFL.B3900/b3900.hpp"
+#include "../components/sockets/cartBoards/B3900/b3900.hpp"
 
 namespace cartV0 {
 

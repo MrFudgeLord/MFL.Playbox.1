@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../scheduledDevice.hpp"
-#include "../MFL.M1000/m1000.hpp"
+#include "../basicDeviceClasses/scheduledDevice.hpp"
+#include "../components/motherboard/M1000/m1000.hpp"
 #include "SDL3/SDL_render.h"
 
 struct SDLContext {
