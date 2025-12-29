@@ -13,9 +13,13 @@ The MFL.Playbox.1 is a fantasy console, with the following specs:
 The controller is practically just an NES controller. The keys are mapped as follows:
 
 DPad: WASD
+
 A: J
+
 B: L
+
 Start: [ (left bracket)
+
 Select ] (right bracket)
 
 Support for key remapping will probably be added soon.
