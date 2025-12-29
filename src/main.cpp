@@ -1,31 +1,44 @@
 #include "main.hpp"
+#include "SDL3/SDL_init.h"
 
 namespace scheduler {
 extern processor *processorPtr;
 }
 
+std::fstream ROMFileStream;
+std::fstream NVRAMFileStream;
+
+void exitCleanup() {
+    cartV0::storeNVRAM(NVRAMFileStream);
+    SDL_Quit();
+    printf("Cleaned up!");
+}
+
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    atexit(SDL_Quit);
+    atexit(exitCleanup);
 
     if(argc < 2) {
         SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "Not enough arguments!");
         exit(1);
+    } else if(argc == 2) {
+        ROMFileStream.open(argv[1], std::ios::in | std::ios::binary);
+    } else if(argc == 3) {
+        ROMFileStream.open(argv[1], std::ios::in | std::ios::binary);
+        NVRAMFileStream.open(argv[2], std::ios::in | std::ios::out | std::ios::binary);
     }
-    std::string cartPath = argv[1];
 
-    std::fstream cartFileStream(cartPath);
-    uint8_t      version;
-    uint8_t      mbType;
-    cartFileStream.read((char *) &version, 1);
-    cartFileStream.read((char *) &mbType, 1);
+    uint8_t version;
+    uint8_t mbType;
+    ROMFileStream.read((char *) &version, 1);
+    ROMFileStream.read((char *) &mbType, 1);
 
-    B3900 *(*cartFuncs[256])(std::fstream &) = {
-        &cartM1100,
+    B3900 *(*cartFuncs[256])(std::fstream &, std::fstream &) = {
+        &cartV0::cartM1100,
     };
 
-    B3900 *cartMB = cartFuncs[mbType](cartFileStream);
+    B3900 *cartMB = cartFuncs[mbType](ROMFileStream, NVRAMFileStream);
 
     C1000 CPU;
     S1003 workRAM_1;

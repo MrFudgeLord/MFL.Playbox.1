@@ -1,8 +1,19 @@
 #pragma once
 
 #include <fstream>
-
 #include "../MFL.B3900/b3900.hpp"
 
-B3900 *cartM1100(std::fstream &cartFileStream);
-bool   cleanupM1100(std::fstream &cartFileStream, B3900 *cartMB);
+namespace cartV0 {
+
+struct nvram {
+    uint8_t *memory;
+    uint32_t size;
+};
+
+extern uint8_t nvramCount;
+extern nvram   nvramComponents[256];
+bool           storeNVRAM(std::fstream &NVRAMFileStream);
+
+B3900 *cartM1100(std::fstream &ROMFileStream, std::fstream &NVRAMFileStream);
+
+} // namespace cartV0
